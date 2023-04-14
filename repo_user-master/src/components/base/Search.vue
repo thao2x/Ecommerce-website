@@ -1,0 +1,52 @@
+<template>
+    <div>
+        <template>
+            <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
+        </template>
+
+        <input placeholder="Search" type="text" v-model="value" @keyup.stop.prevent="$emit('keyPress', value)"
+            @focus="$emit('onFocus', value)" />
+    </div>
+</template>
+  
+<script>
+export default {
+    data() {
+        return {
+            value: null,
+        };
+    },
+    methods: {
+    }
+};
+</script>
+  
+<style scoped lang="scss">
+div {
+    position: relative;
+    width: 100%;
+
+    svg {
+        left: 10px;
+        top: 50%;
+        position: absolute;
+        transform: translateY(-50%);
+    }
+
+    input {
+        font-family: system-ui;
+        font-size: 17px;
+        font-weight: 600;
+        width: calc(100% - 32px);
+        border: none;
+        padding: 17px 0px;
+        padding-left: 32px;
+        background-color: #cccccc45;
+        border-radius: 15px;
+
+        &:focus-visible {
+            outline: 2px solid #686565;
+        }
+    }
+}
+</style>
