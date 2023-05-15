@@ -5,17 +5,41 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    user: {},
+    categories: [],
+    promos: [],
+    populars: [],
+    keySearch: "",
+    cartItems: [],
+    address: {}
   },
-
-  getters: {
-  },
-
   mutations: {
-  },
+    changeUser(state, payload) {
+      state.user = payload;
+    },
 
-  actions: {
-  },
+    changeCategories(state, payload) {
+      state.categories = payload;
+    },
 
-  modules: {
+    changePromos(state, payload) {
+      state.promos = payload;
+    },
+
+    changePupulars(state, payload) {
+      state.populars = payload;
+    },
+
+    changeKeySearch(state, payload) {
+      state.keySearch = payload;
+    },
+
+    changeCartItems(state, payload) {
+      state.cartItems = payload;
+    },
+
+    changeAddress(state, payload) {
+      state.address = payload;
+    }
   }
 })

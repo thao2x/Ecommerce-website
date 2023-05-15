@@ -1,179 +1,122 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import VueRouter, { isNavigationFailure, NavigationFailureType } from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [  
+const routes = [
   {
-    path : '/',
+    path: '/',
     redirect: 'home'
   },
   {
     path: '/home',
     name: 'home',
     component: function () {
-      return import(/* webpackChunkName: "Home" */ '@/views/menu/home/Index')
-    }
-  },
-  {
-    path: '/product-detail',
-    name: 'product-detail',
-    component: function () {
-      return import(/* webpackChunkName: "Product detail" */ '@/views/product/Detail')
+      return import(/* webpackChunkName: "Home" */ '@/views/Home')
     }
   },
   {
     path: '/search',
     name: 'search',
     component: function () {
-      return import(/* webpackChunkName: "Search" */ '@/views/menu/search/Index')
+      return import(/* webpackChunkName: "Search" */ '@/views/Search')
     }
   },
   {
-    path: '/lets-in',
-    name: 'lets-in',
+    path: '/offer',
+    name: 'offer',
     component: function () {
-      return import(/* webpackChunkName: "LetsIn" */ '@/views/account/LetsIn')
+      return import(/* webpackChunkName: "Offers" */ '@/views/Offer')
     }
   },
   {
-    path: '/sign-in',
-    name: 'sign-in',
+    path: '/notification',
+    name: 'notification',
     component: function () {
-      return import(/* webpackChunkName: "SignIn" */ '@/views/account/SignIn')
+      return import(/* webpackChunkName: "Notification" */ '@/views/Notification')
     }
   },
   {
-    path: '/sign-up',
-    name: 'sign-up',
+    path: '/category/:id',
+    name: 'category',
     component: function () {
-      return import(/* webpackChunkName: "SignUp" */ '@/views/account/SignUp')
+      return import(/* webpackChunkName: "Category" */ '@/views/Category')
     }
   },
   {
-    path: '/fill-profile',
-    name: 'fill-profile',
+    path: '/login',
+    name: 'login',
     component: function () {
-      return import(/* webpackChunkName: "FillProfile" */ '@/views/account/FillProfile')
+      return import(/* webpackChunkName: "Login" */ '@/views/auth/Login')
     }
   },
   {
-    path: '/new-pin',
-    name: 'new-pin',
+    path: '/register',
+    name: 'register',
     component: function () {
-      return import(/* webpackChunkName: "NewPin" */ '@/views/account/NewPin')
-    }
-  },
-  {
-    path: '/forgot-password',
-    name: 'forgot-password',
-    component: function () {
-      return import(/* webpackChunkName: "ForgotPassword" */ '@/views/account/ForgotPassword')
-    }
-  },
-  {
-    path: '/verify-password',
-    name: 'verify-password',
-    component: function () {
-      return import(/* webpackChunkName: "VerifyPassword" */ '@/views/account/VerifyPassword')
-    }
-  },
-  {
-    path: '/new-password',
-    name: 'new-password',
-    component: function () {
-      return import(/* webpackChunkName: "NewPassword" */ '@/views/account/ResetPassword')
-    }
-  },
-  {
-    path: '/type',
-    name: 'type',
-    component: function () {
-      return import(/* webpackChunkName: "ShoesType" */ '@/views/menu/shoes_type/Index')
-    }
-  },
-  {
-    path: '/notifications',
-    name: 'notifications',
-    component: function () {
-      return import(/* webpackChunkName: "Notifications" */ '@/views/menu/notification/Index')
-    }
-  },
-  {
-    path: '/wishlist',
-    name: 'wishlist',
-    component: function () {
-      return import(/* webpackChunkName: "Wishlist" */ '@/views/menu/wishlist/Index')
-    }
-  },
-  {
-    path: '/popular',
-    name: 'popular',
-    component: function () {
-      return import(/* webpackChunkName: "Popular" */ '@/views/menu/popular/Index')
-    }
-  },
-  {
-    path: '/offers',
-    name: 'offers',
-    component: function () {
-      return import(/* webpackChunkName: "Offers" */ '@/views/menu/special_offer/Index')
+      return import(/* webpackChunkName: "Register" */ '@/views/auth/Register')
     }
   },
   {
     path: '/cart',
     name: 'cart',
     component: function () {
-      return import(/* webpackChunkName: "Cart" */ '@/views/cart/Index')
+      return import(/* webpackChunkName: "Cart" */ '@/views/Cart')
+    }
+  },
+  {
+    path: '/fill-profile',
+    name: 'fill-profile',
+    component: function () {
+      return import(/* webpackChunkName: "FillProfile " */ '@/views/FillProfile')
+    }
+  },
+  {
+    path: '/product/:id',
+    name: 'product',
+    component: function () {
+      return import(/* webpackChunkName: "Product" */ '@/views/Product')
     }
   },
   {
     path: '/checkout',
     name: 'checkout',
     component: function () {
-      return import(/* webpackChunkName: "Checkout" */ '@/views/checkout/Index')
+      return import(/* webpackChunkName: "Checkout" */ '@/views/Checkout')
     }
   },
   {
-    path: '/shipping_address',
-    name: 'shipping_address',
+    path: '/order',
+    name: 'order',
     component: function () {
-      return import(/* webpackChunkName: "ShippingAddress" */ '@/views/checkout/ShipingAdress')
+      return import(/* webpackChunkName: "Order" */ '@/views/Order')
     }
   },
   {
-    path: '/choose_shipping',
-    name: 'choose_shipping',
+    path: '/profile',
+    name: 'profile',
     component: function () {
-      return import(/* webpackChunkName: "ChooseShiping" */ '@/views/checkout/ChooseShiping')
+      return import(/* webpackChunkName: "Profile" */ '@/views/Profile')
     }
   },
-  {
-    path: '/payment_methods',
-    name: 'payment_methods',
-    component: function () {
-      return import(/* webpackChunkName: "PaymentMethods" */ '@/views/checkout/PaymentMethods')
-    }
-  },
-  {
-    path: '/confirm_PIN',
-    name: 'confirm_PIN',
-    component: function () {
-      return import(/* webpackChunkName: "ConfirmPin" */ '@/views/checkout/ConfirmPin')
-    }
-  },
-  {
-    path: '/setting',
-    name: 'setting',
-    component: function () {
-      return import(/* webpackChunkName: "SettingProfile" */ '@/views/setting/Index')
-    }
-  }
 ]
 
 const router = new VueRouter({
   mode: 'history',
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  // Chuyển đến trang login nếu chưa được login
+  const publicPages = ['login', 'register', 'home', 'search', 'offer', 'notification', 'category'];
+  const authRequired = !publicPages.includes(to.name);
+  const loggedIn = localStorage.getItem('user');
+
+  if (authRequired && !loggedIn) {
+    return next('/login');
+  }
+
+  next();
 })
 
 export default router
