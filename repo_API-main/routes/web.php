@@ -2,110 +2,52 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('login', [App\Http\Controllers\Admin\LoginController::class, 'loginForm'])->name('admin.loginForm');
-    Route::post('login', [App\Http\Controllers\Admin\LoginController::class, 'login'])->name('admin.login');
-    Route::get('logout', [App\Http\Controllers\Admin\LoginController::class, 'logout'])->name('admin.logout');
-});
+Route::middleware(['auth'])->group(function () {
 
-Route::group(['prefix' => 'admin'], function() {
+    Route::get('/admin/home', [App\Http\Controllers\Admin\HomeController::class, 'index'])->name('admin.home');
 
-    /**
-    * Orders Routes
-    */
-    Route::group(['prefix' => 'orders'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
-        Route::get('/{order}/show',  [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
-        Route::patch('/{order}/update', [App\Http\Controllers\Admin\OrderController::class, 'update'])->name('orders.update');
-        Route::patch('/{order}/cancel', [App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
-    });
+    Route::view('/admin/login', 'layout.login')->name('guest')->withoutMiddleware(['auth']);
+    Route::post('/admin/login', [App\Http\Controllers\Admin\AuthController::class, 'login'])->name('admin.login')->withoutMiddleware(['auth']);
+    Route::get('/admin/logout', [App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('admin.logout');
 
-    /**
-    * Product Routes
-    */
-    Route::group(['prefix' => 'products'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\ProductController::class, 'index'])->name('products.index');
-        Route::get('/create',  [App\Http\Controllers\Admin\ProductController::class, 'create'])->name('products.create');
-        Route::post('/store',  [App\Http\Controllers\Admin\ProductController::class, 'store'])->name('products.store');
-        Route::get('/{product}',  [App\Http\Controllers\Admin\ProductController::class, 'detail'])->name('products.detail');
-        Route::get('/{product}/show',  [App\Http\Controllers\Admin\ProductController::class, 'show'])->name('products.show');
-        Route::patch('/{product}/update', [App\Http\Controllers\Admin\ProductController::class, 'update'])->name('products.update');
-        Route::get('/{product}/destroy', [App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('products.destroy');
-    });
+    Route::get('/admin/order', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.order.index');
+    Route::get('/admin/order/{orderId}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.order.show');
+    Route::post('/admin/order/{orderId}', [App\Http\Controllers\Admin\OrderController::class, 'update'])->name('admin.order.update');
+    Route::delete('/admin/order/{orderId}', [App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.order.destroy');
 
-    /**
-    * Category Routes
-    */
-    Route::group(['prefix' => 'categories'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
-        Route::get('/{category}/show',  [App\Http\Controllers\Admin\CategoryController::class, 'show'])->name('categories.show');
-        Route::get('/create',  [App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
-        Route::patch('/{category}/update', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
-        Route::post('/store',  [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
-        Route::get('/{category}/destroy', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
-    });
+    Route::get('/admin/product', [App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.product.index');
+    Route::get('/admin/product/new-product', [App\Http\Controllers\Admin\ProductController::class, 'store'])->name('admin.product.store');
+    Route::get('/admin/product/{productId}', [App\Http\Controllers\Admin\ProductController::class, 'show'])->name('admin.product.show');
+    Route::post('/admin/product/{productId}', [App\Http\Controllers\Admin\ProductController::class, 'update'])->name('admin.product.update');
+    Route::get('/admin/productssss/{productId}/delete', [App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('admin.product.destroy');
 
-    /**
-    * Shipping Routes
-    */
-    Route::group(['prefix' => 'shipping'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\ShippingController::class, 'index'])->name('shipping.index');
-        Route::get('/{shipping}/show',  [App\Http\Controllers\Admin\ShippingController::class, 'show'])->name('shipping.show');
-        Route::get('/create',  [App\Http\Controllers\Admin\ShippingController::class, 'create'])->name('shipping.create');
-        Route::patch('/{shipping}/update', [App\Http\Controllers\Admin\ShippingController::class, 'update'])->name('shipping.update');
-        Route::post('/store',  [App\Http\Controllers\Admin\ShippingController::class, 'store'])->name('shipping.store');
-        Route::get('/{shipping}/destroy', [App\Http\Controllers\Admin\ShippingController::class, 'destroy'])->name('shipping.destroy');
-    });
+    Route::get('/admin/category', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.category.index');
+    Route::post('/admin/category', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('admin.category.store');
+    Route::get('/admin/category/{categoryId}', [App\Http\Controllers\Admin\CategoryController::class, 'show'])->name('admin.category.show');
+    Route::post('/admin/category/{categoryId}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('admin.category.update');
+    Route::delete('/admin/category/{categoryId}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('admin.category.destroy');
 
-    /**
-    * Promo Routes
-    */
-    Route::group(['prefix' => 'promo'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\PromoController::class, 'index'])->name('promo.index');
-        Route::get('/{promo}/show',  [App\Http\Controllers\Admin\PromoController::class, 'show'])->name('promo.show');
-        Route::get('/create',  [App\Http\Controllers\Admin\PromoController::class, 'create'])->name('promo.create');
-        Route::patch('/{promo}/update', [App\Http\Controllers\Admin\PromoController::class, 'update'])->name('promo.update');
-        Route::post('/store',  [App\Http\Controllers\Admin\PromoController::class, 'store'])->name('promo.store');
-        Route::get('/{promo}/destroy', [App\Http\Controllers\Admin\PromoController::class, 'destroy'])->name('promo.destroy');
-    });
+    Route::get('/admin/shipping', [App\Http\Controllers\Admin\ShippingController::class, 'index'])->name('admin.shipping.index');
+    Route::post('/admin/shipping', [App\Http\Controllers\Admin\ShippingController::class, 'store'])->name('admin.shipping.store');
+    Route::get('/admin/shipping/{shippingId}', [App\Http\Controllers\Admin\ShippingController::class, 'show'])->name('admin.shipping.show');
+    Route::post('/admin/shipping/{shippingId}', [App\Http\Controllers\Admin\ShippingController::class, 'update'])->name('admin.shipping.update');
+    Route::delete('/admin/shipping/{shippingId}', [App\Http\Controllers\Admin\ShippingController::class, 'destroy'])->name('admin.shipping.destroy');
 
-     /**
-    * Variant Routes
-    */
-    Route::group(['prefix' => 'variants'], function() {
-        Route::post('/store',  [App\Http\Controllers\Admin\VariantController::class, 'store'])->name('variants.store');
-        Route::get('/{variant}/show',  [App\Http\Controllers\Admin\VariantController::class, 'show'])->name('variants.show');
-        Route::patch('/{variant}/update', [App\Http\Controllers\Admin\VariantController::class, 'update'])->name('variants.update');
-        Route::get('/{variant}/destroy', [App\Http\Controllers\Admin\VariantController::class, 'destroy'])->name('variants.destroy');
-    });
+    Route::get('/admin/promo', [App\Http\Controllers\Admin\PromoController::class, 'index'])->name('admin.promo.index');
+    Route::post('/admin/promo', [App\Http\Controllers\Admin\PromoController::class, 'store'])->name('admin.promo.store');
+    Route::get('/admin/promo/{promoId}', [App\Http\Controllers\Admin\PromoController::class, 'show'])->name('admin.promo.show');
+    Route::post('/admin/promo/{promoId}', [App\Http\Controllers\Admin\PromoController::class, 'update'])->name('admin.promo.update');
+    Route::delete('/admin/promo/{promoId}', [App\Http\Controllers\Admin\PromoController::class, 'destroy'])->name('admin.promo.destroy');
 
-    /**
-    * Customer Routes
-    */
-    Route::group(['prefix' => 'customers'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
-        Route::post('/store',  [App\Http\Controllers\Admin\CustomerController::class, 'store'])->name('customers.store');
-        Route::get('/{customer}/show',  [App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('customers.show');
-        Route::patch('/{customer}/update', [App\Http\Controllers\Admin\CustomerController::class, 'update'])->name('customers.update');
-        Route::delete('/{customer}/destroy', [App\Http\Controllers\Admin\CustomerController::class, 'destroy'])->name('customers.destroy');
-    });
+    Route::get('/admin/variant', [App\Http\Controllers\Admin\VariantController::class, 'index'])->name('admin.variant.index');
+    Route::post('/admin/variant', [App\Http\Controllers\Admin\VariantController::class, 'store'])->name('admin.variant.store');
+    Route::get('/admin/variant/{variantId}', [App\Http\Controllers\Admin\VariantController::class, 'show'])->name('admin.variant.show');
+    Route::post('/admin/variant/{variantId}', [App\Http\Controllers\Admin\VariantController::class, 'update'])->name('admin.variant.update');
+    Route::delete('/admin/variant/{variantId}', [App\Http\Controllers\Admin\VariantController::class, 'destroy'])->name('admin.variant.destroy');
 
-    /**
-    * Users Routes
-    */
-    Route::group(['prefix' => 'users'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
-        Route::patch('/{user}/update', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
-    });
+    Route::get('/admin/customer', [App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('admin.customer.index');
+    Route::get('/admin/customer/{customerId}', [App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('admin.customer.show');
 
-    /**
-    * Dashbroad Routes
-    */
-    Route::group(['prefix' => 'dashbroad'], function() {
-        Route::get('/', [App\Http\Controllers\Admin\DashbroadController::class, 'index'])->name('dashbroad.index');
-    });
-});
-
-Route::fallback(function () {
-    return redirect()->route('dashbroad.index');
+    Route::get('/admin/user', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.user.index');
+    Route::post('/admin/user', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.user.update');
 });

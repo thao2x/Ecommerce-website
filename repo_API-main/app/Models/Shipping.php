@@ -15,7 +15,8 @@ class Shipping extends Model
     protected $fillable = ['id', 'name', 'description', 'price', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function orders(): HasMany

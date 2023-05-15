@@ -15,7 +15,8 @@ class Category extends Model
     protected $fillable = ['id', 'name', 'description', 'image', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function products(): HasMany

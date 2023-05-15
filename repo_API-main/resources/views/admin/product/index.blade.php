@@ -2,38 +2,21 @@
 @section('title')
     <div class="pagetitle">
         <h1>Sản phẩm</h1>
-    </div><!-- End Page Title -->
+    </div>
 @endsection
 
 @section('content')
-<style>
-    .datatable-top {
-        display: none
-    }
-    .datatable-bottom {
-        display: none
-    }
-
-    .img-product {
-        width: 42px;
-        height: 42px;
-        border-radius: 5px;
-        border: 1px solid #cacaca;
-    }
-</style>
-    <!-- Recent Sales -->
     <div class="col-12">
         <div class="card recent-sales overflow-auto">
-
             <div class="card-body">
                 <div class="d-flex justify-content-between my-3">
-                    <form method="get" action="{{ route('products.index') }}">
+                    <form method="get" action="{{ route('admin.product.index') }}">
                         <div class="form-group has-search d-flex justify-content-between">
                             <input type="text" class="form-control ms-2" name="query" value="{{ $query_prev }}" placeholder="Tìm kiếm">
                             <button type="submit" class="btn btn-outline-secondary ms-2"><i class="bi bi-search"></i></button>
                         </div>
                     </form>                    
-                    <a class="btn btn-success w-auto" href="{{route('products.create')}}">
+                    <a class="btn btn-success w-auto" href="{{route('admin.product.store')}}">
                         <span>Thêm mới</span>
                     </a>
                 </div>
@@ -58,7 +41,7 @@
                                             @else
                                                 <img class="img-product" src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
                                             @endif
-                                            <a class="ps-3" href="{{ route('products.detail', $product->id) }}">{{ $product->name }}</a>
+                                            <a class="ps-3" href="{{ route('admin.product.show', $product->id) }}">{{ $product->name }}</a>
                                         </div>
                                     </td>
                                     <td scope="col">
@@ -88,5 +71,5 @@
             </div>
 
         </div>
-    </div><!-- End Recent Sales -->
+    </div>
 @endsection

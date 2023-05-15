@@ -7,17 +7,10 @@
                 <li class="breadcrumb-item active">{{ $customer->nick_name }}</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
+    </div>
 @endsection
 
 @section('content')
-    <style>
-        .img-product {
-            width: 42px;
-            height: 42px;
-            border-radius: 5px;
-        }
-    </style>
     <div class="row">
         <div class="col-8">
             <div class="row">
@@ -66,7 +59,7 @@
                         <div class="py-2">
                             <div class="row">
                                 <div class="col-8 d-flex align-items-center">
-                                    <a class="text-primary" href="{{ route('orders.show', $customer->orders->last()->id) }}">#{{$customer->orders->last()->code}}</a>
+                                    <a class="text-primary" href="{{ route('admin.order.show', $customer->orders->last()->id) }}">#{{$customer->orders->last()->code}}</a>
                                     @if ($customer->orders->last()->status == 1)
                                         <span class="badge bg-info px-3 py-2 ms-3">Chưa xử lý</span>
                                     @elseif ($customer->orders->last()->status == 2)
@@ -121,7 +114,7 @@
                         @endforeach
                         
                         <div class="d-flex justify-content-end pt-2">
-                            <a href="{{ route('orders.index', array('customer_id' => $customer->id)) }}" class="btn btn-outline-primary">Xem tất cả đơn hàng</a>
+                            <a href="{{ route('admin.order.index', array('customer_id' => $customer->id)) }}" class="btn btn-outline-primary">Xem tất cả đơn hàng</a>
                         </div>
 
                     </div>

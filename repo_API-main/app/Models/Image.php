@@ -15,7 +15,8 @@ class Image extends Model
     protected $fillable = ['id', 'product_id', 'src'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function product(): BelongsTo

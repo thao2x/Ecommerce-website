@@ -28,7 +28,7 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-    @toastr_css
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
     <!-- =======================================================
   * Template Name: NiceAdmin
   * Updated: Mar 09 2023 with Bootstrap v5.2.3

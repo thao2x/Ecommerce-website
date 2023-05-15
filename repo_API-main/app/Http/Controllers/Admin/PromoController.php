@@ -4,64 +4,115 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Promo;
 
 class PromoController extends Controller
 {
-    public function index() {
-        $promoList = Promo::orderBy('created_at', 'DESC')->paginate(10);
+    public function index()
+    {
+        $promos = Promo::orderBy('created_at', 'DESC')->get();
 
         return view('admin.promo.index', [
-            'promoList' => $promoList
+            'promos' => $promos
         ]);
     }
 
-    public function show($id) {
-        $promo = Promo::findOrFail($id);
+    public function store(Request $request)
+    {
+        $messages = [
+            'name.required' => 'Trường tiêu đề là bắt buộc.',
+            'description.required' => 'Trường mô tả là bắt buộc.',
+            'percentage.required' => 'Trường giá vận chuyển là bắt buộc.',
+            'published_at.required' => 'Ngày phát hành là bắt buộc.'
+        ];
 
-        return view('admin.promo.detail', [
-            'promo' => $promo
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'percentage' => 'required',
+            'published_at' => 'required'
+        ], $messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->messages()
+            ], 200);
+        }
+
+        Promo::create([
+            'name' => $request['name'],
+            'description' => $request['description'],
+            'percentage' => $request['percentage'],
+            'published_at' => $request['published_at']
         ]);
+
+        $promos = Promo::orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $promos
+        ], 200);
     }
 
-    public function create() {
-        return view('admin.promo.create', []);
+    public function show(string $promoId)
+    {
+        $category = Promo::findOrFail($promoId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $category
+        ], 200);
     }
 
-    public function store(Request $request) {
-        $data = $request->all();
-        Promo::create($data);
+    public function update(Request $request, string $promoId)
+    {
+        $messages = [
+            'name.required' => 'Trường tiêu đề là bắt buộc.',
+            'description.required' => 'Trường mô tả là bắt buộc.',
+            'percentage.required' => 'Trường giá vận chuyển là bắt buộc.',
+            'published_at.required' => 'Ngày phát hành là bắt buộc.'
+        ];
 
-        $promoList = Promo::orderBy('created_at', 'DESC')->paginate(10);
-        
-        return view('admin.promo.index', [
-            'promoList' => $promoList
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'percentage' => 'required',
+            'published_at' => 'required'
+        ], $messages);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->messages()
+            ], 200);
+        }        
+
+        Promo::findOrFail($promoId)->update([
+            'name' => $request['name'],
+            'description' => $request['description'],
+            'percentage' => $request['percentage'],
+            'published_at' => $request['published_at']
         ]);
+
+        // Lấy lại danh sách promos mới nhất
+        $promos = Promo::orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $promos
+        ], 200);
     }
 
-    public function update(Request $request) {
-        $data = $request->all();
+    public function destroy(string $promoId)
+    {
+        Promo::findOrFail($promoId)->update(['del_flg' => 1]);
+        $promos = Promo::orderBy('created_at', 'DESC')->get();
 
-        Promo::findOrFail($data['id'])->update([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'percentage' => $data['percentage'],
-            'published_at' => $data['published_at']
-        ]);
-
-        $promoList = Promo::orderBy('created_at', 'DESC')->paginate(10);
-        
-        return view('admin.promo.index', [
-            'promoList' => $promoList
-        ]);
-    }
-
-    public function destroy($id) {
-        Promo::findOrFail($id)->update(['del_flg' => 1]);
-        $promoList = Promo::orderBy('created_at', 'DESC')->paginate(10);
-        
-        return view('admin.promo.index', [
-            'promoList' => $promoList
-        ]);
+        return response()->json([
+            'success' => true,
+            'data' => $promos
+        ], 200);
     }
 }

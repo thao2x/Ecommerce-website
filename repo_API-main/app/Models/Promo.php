@@ -15,7 +15,9 @@ class Promo extends Model
     protected $fillable = ['id', 'name', 'percentage', 'description', 'active_flg', 'published_at', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'published_at' => 'datetime:Y-m-d',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function orders(): HasMany

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('customer_id');
             $table->uuid('shiping_address_id');
             $table->uuid('shipping_id');
-            $table->uuid('promo_id');
+            $table->uuid('promo_id')->nullable();
             $table->string('code');
             $table->integer('status')->default(0);
             $table->smallInteger('del_flg')->default(0);

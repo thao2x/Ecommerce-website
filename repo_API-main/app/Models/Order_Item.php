@@ -18,7 +18,8 @@ class Order_Item extends Model
     protected $fillable = ['id', 'variant_id', 'order_id', 'quantity'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function variant(): BelongsTo

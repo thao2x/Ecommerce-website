@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Passport\HasApiTokens;
 use App\Models\Product;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'id',
@@ -25,7 +24,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function products(): HasMany

@@ -19,7 +19,8 @@ class Shipping_address extends Model
     protected $fillable = ['id', 'customer_id', 'name', 'details', 'default_flg', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function customers(): BelongsTo

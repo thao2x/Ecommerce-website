@@ -1,40 +1,43 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Http\Controllers\Api\Controller;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return Product::with('variants', 'categories')->get();
+        $products = Product::with('images', 'variants')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ], 200);
     }
 
-    public function show(Request $request)
+    public function show(string $productId)
     {
-        return Product::with('variants', 'categories')->find($request->id);
+        $product = Product::with('images', 'variants')->find($productId);
+
+        return response()->json([
+            'success' => true,
+            'data' => $product
+        ], 200);
     }
 
-    public function store(Request $request)
-    {
-        $product = Product::create($request->all());
-
-        return response()->json($product, 201);
-    }
-
-    public function update(Request $request, Product $product)
-    {
-        $product->update($request->all());
-
-        return response()->json($product, 200);
-    }
-
-    public function delete(Product $product)
-    {
-        $product->delete();
-
-        return response()->json(null, 204);
+    public function search(Request $request) {
+        $products = Product::with('images', 'variants')->where(function($query) use ($request) {
+            if ($request->has('query')) {
+                $query->where('name', 'LIKE', '%'.$request['query'].'%');
+            }
+        })->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ], 200);
     }
 }

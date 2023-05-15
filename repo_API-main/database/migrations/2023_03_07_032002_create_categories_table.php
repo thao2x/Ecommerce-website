@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->longText('description')->nullable();
-            $table->longText('image');
+            $table->longText('image')->nullable();
             $table->smallInteger('del_flg')->default(0);
             $table->timestamps();
         });

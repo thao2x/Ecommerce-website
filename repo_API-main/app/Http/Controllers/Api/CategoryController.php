@@ -1,40 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Controller;
 use App\Models\Category;
+use App\Models\Product;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return Category::all();
+        $categories = Category::all();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ], 200);
     }
 
-    public function show(Category $category)
-    {
-        return $category;
-    }
-
-    public function store(Request $request)
-    {
-        $category = Category::create($request->all());
-
-        return response()->json($category, 201);
-    }
-
-    public function update(Request $request, Category $category)
-    {
-        $category->update($request->all());
-
-        return response()->json($category, 200);
-    }
-
-    public function delete(Category $category)
-    {
-        $category->delete();
-
-        return response()->json(null, 204);
+    public function search(string $categoryId) {
+        $products = Product::with('images', 'variants', 'categories')->where('category_id', $categoryId)->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ], 200);
     }
 }

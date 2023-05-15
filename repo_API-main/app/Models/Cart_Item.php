@@ -18,7 +18,8 @@ class Cart_Item extends Model
     protected $fillable = ['id', 'customer_id', 'variant_id', 'quantity'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function variant(): BelongsTo

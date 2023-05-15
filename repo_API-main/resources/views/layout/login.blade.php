@@ -30,6 +30,7 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: NiceAdmin
@@ -41,69 +42,49 @@
 </head>
 
 <body>
-
-    <main>
-        <div class="container">
-
-            <section
-                class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5 col-md-6 d-flex flex-column align-items-center justify-content-center">
-                            <div class="card mb-3">
-
-                                <div class="card-body">
-
-                                    <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">NiceAdmin</h5>
-                                    </div>
-
-                                    <form class="row g-3 needs-validation" action="{{ route('admin.login') }}" method="POST">
-                                        @csrf
-                                        <div class="col-12">
-                                            <label for="yourPassword" class="form-label">Your Email</label>
-                                            <input type="email" name="email" class="form-control" required>
-                                            <div class="invalid-feedback">Please enter your password!</div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label for="yourPassword" class="form-label">Password</label>
-                                            <input type="password" name="password" class="form-control"
-                                                id="yourPassword" required>
-                                            <div class="invalid-feedback">Please enter your password!</div>
-                                        </div>
-                                        <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
-                                        </div>
-                                    </form>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+    <div class="container d-flex align-items-center justify-content-center min-vh-100 w-login">
+        <div class="card-body shadow-lg m-5 mb-5 bg-body rounded w-75">
+            <div class="pt-4 pb-2">
+                <h5 class="card-title text-center pb-0 fs-4">ShoesAdmin</h5>
+            </div>
+            <form class="row g-3 needs-validation" action="{{ route('admin.login') }}" method="POST">
+                @csrf
+                <div class="col-12">
+                    <label for="yourPassword" class="form-label">Email</label>
+                    <input type="text" name="email" class="form-control @error('email') is-invalid @enderror"
+                        value="{{ old('email') }}">
+                    @error('email')
+                        <p class="text-danger pt-2">{{ $message }}</p>
+                    @enderror
                 </div>
 
-            </section>
-
+                <div class="col-12">
+                    <label for="yourPassword" class="form-label">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                        value="{{ old('password') }}">
+                    @error('password')
+                        <p class="text-danger pt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <button class="btn btn-primary w-auto" type="submit">Đăng nhập</button>
+                </div>
+            </form>
         </div>
-    </main><!-- End #main -->
-
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-            class="bi bi-arrow-up-short"></i></a>
+    </div>
 
     <!-- Vendor JS Files -->
-    <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/chart.js/chart.umd.js"></script>
-    <script src="assets/vendor/echarts/echarts.min.js"></script>
-    <script src="assets/vendor/quill/quill.min.js"></script>
-    <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- Template Main JS File -->
-    <script src="assets/js/main.js"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
 

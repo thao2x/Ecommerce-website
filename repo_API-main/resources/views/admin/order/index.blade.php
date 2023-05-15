@@ -23,7 +23,7 @@
                     <a class="btn btn-primary disabled ms-2">
                         <span>Tất cả</span>
                     </a>
-                    <form method="get" action="{{ route('orders.index') }}">
+                    <form method="get" action="{{ route('admin.order.index') }}">
                         <div class="form-group has-search d-flex justify-content-between">
                                 <input type="text" class="form-control me-2" name="query" value="{{ $query_prev }}" placeholder="Tìm kiếm">
                                 <button type="submit" class="btn btn-outline-secondary me-3"><i class="bi bi-search"></i></button>
@@ -45,7 +45,7 @@
                         @foreach ($orders as $order)
                             <tr>
                                 <td scope="col" class="text-primary">
-                                    <a href="{{ route('orders.show', $order->id) }}">#{{ $order->code }}</a>
+                                    <a href="{{ route('admin.order.show', $order->id) }}">#{{ $order->code }}</a>
                                 </td>
                                 <td scope="col">{{ $order->created_at }}</td>
                                 <td scope="col">{{ $order->customer->full_name }}</td>

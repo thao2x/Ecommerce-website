@@ -22,8 +22,8 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function show($id) {
-        $customer = Customer::findOrFail($id);
+    public function show(string $customerId) {
+        $customer = Customer::findOrFail($customerId);
 
         return view('admin.customer.detail', [
             'customer' => $customer

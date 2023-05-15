@@ -24,23 +24,20 @@ class OrderController extends Controller
         ]);
     }
     
-    public function show(string $id) {
-        $order = Order::find($id);
-
+    public function show(string $orderId) {
+        $order = Order::find($orderId);
         return view('admin.order.detail', [
             'order' => $order
         ]);
     }
 
-    public function update(string $id) {
-        Order::find($id)->update(['status' => 2]);
-
+    public function update(string $orderId) {
+        Order::find($orderId)->update(['status' => 2]);
         return redirect()->back();
     }
 
-    public function cancel(string $id) {
-        Order::find($id)->update(['status' => 3]);
-
+    public function destroy(string $orderId) {
+        Order::find($orderId)->update(['status' => 3]);
         return redirect()->back();
     }
 }

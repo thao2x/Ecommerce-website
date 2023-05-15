@@ -22,7 +22,8 @@ class Order extends Model
     protected $fillable = ['id', 'customer_id', 'shiping_address_id', 'shipping_id', 'promo_id', 'code', 'status', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function order_items(): HasMany

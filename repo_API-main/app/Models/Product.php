@@ -19,7 +19,8 @@ class Product extends Model
     protected $fillable = ['id', 'category_id', 'user_id', 'name', 'type', 'price', 'description', 'rating', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function variants(): HasMany
@@ -33,7 +34,7 @@ class Product extends Model
     }
 
     public function user(): BelongsTo
-    {
+    {   
         return $this->belongsTo(User::class, 'user_id');
     }
 

@@ -30,7 +30,7 @@
                     <a class="btn btn-primary disabled ms-2">
                         <span>Tất cả</span>
                     </a>
-                    <form method="get" action="{{ route('customers.index') }}">
+                    <form method="get" action="{{ route('admin.customer.index') }}">
                         <div class="form-group has-search d-flex justify-content-between">
                                 <input type="text" class="form-control me-2" name="query" value="{{ $query_prev }}" placeholder="Tìm kiếm">
                                 <button type="submit" class="btn btn-outline-secondary me-3"><i class="bi bi-search"></i></button>
@@ -58,7 +58,7 @@
                                             @else
                                                 <img class="img-product" src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
                                             @endif
-                                            <a class="ps-3" href="{{ route('customers.show', $customer->id) }}">{{ $customer->nick_name }}</a>
+                                            <a class="ps-3" href="{{ route('admin.customer.show', $customer->id) }}">{{ $customer->nick_name }}</a>
                                         </div>
                                     </td>
                                     <td scope="col">

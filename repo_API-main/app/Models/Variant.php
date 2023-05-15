@@ -16,7 +16,8 @@ class Variant extends Model
     protected $fillable = ['id', 'product_id', 'size', 'del_flg'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'created_at' => 'datetime:Y-m-d'
     ];
 
     public function product(): BelongsTo
