@@ -16,7 +16,7 @@
 
         <!-- Email -->
         <div class="input-group">
-            <font-awesome-icon icon="fa-solid fa-envelope" />
+            <font-awesome-icon :icon="['fas', 'user']" />
             <input placeholder="Nickname" type="text" v-model="nick_name" @focus="errorNickname = null"/>
         </div>
         <p class="error" v-if="errorNickname">{{ errorNickname }}</p>

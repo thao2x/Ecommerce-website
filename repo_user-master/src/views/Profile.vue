@@ -87,7 +87,6 @@
                 <div class="delete__content--btn">
 					<button class="btn--cancel" @click="showPopup = !showPopup">Cancel</button>
                     <button class="btn--remove" @click="removeUser()">Yes, Logout</button>
-                    <!-- <ButtonVue :value="'Yes, Logout'" class="btn--remove" /> -->
                 </div>
             </div>
         </div>
@@ -120,6 +119,8 @@ export default {
             localStorage.removeItem('user');
             this.$router.push('/home');
             this.$store.commit('changeUser', {});
+            this.$store.commit('changeCartItems', {});
+            this.$store.commit('changeAddress', {});
         }
     },
 }

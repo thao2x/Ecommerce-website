@@ -17,7 +17,7 @@
         <!-- Password -->
         <div class="input-group">
             <font-awesome-icon icon="fa-solid fa-lock" />
-            <input placeholder="Password" type="password" v-model="password" @focus="errorPassword = null"/>
+            <input placeholder="Password" type="password" v-model="password" @focus="errorPassword = null" />
         </div>
         <p class="error" v-if="errorPassword">{{ errorPassword }}</p>
 
@@ -41,7 +41,7 @@ import BackButton from '@/components/BackButton'
 import Loading from '@/components/Loading'
 import OtherCnt from "@/components/OtherCnt";
 
-import { login } from "@/api";
+import { login, getCart, getAddress } from "@/api";
 import { mixin } from '@/mixin'
 
 export default {
@@ -80,8 +80,18 @@ export default {
                     // Lưu thông tin user vào vuex store
                     this.$store.commit('changeUser', response.data.data);
 
-                    // Redirect về lại trang home
-                    this.goToPage('home');
+                    Promise.all([getCart(), getAddress()])
+                        .then((result) => {
+                            this.$store.commit('changeCartItems', result[0].data.data);
+                            this.$store.commit('changeAddress', result[1].data.data);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        }).finally(() => {
+                            // Redirect về lại trang home
+                            this.goToPage('home');
+                        });
+
                 } else {
                     // Hiển thị lỗi khi đăng nhập [Validate]
                     console.log(response.data);
@@ -90,7 +100,7 @@ export default {
                     }
 
                     if (response.data.errors.password.length > 0) {
-                        this.errorPassword = response.data.errors.password[0];
+                        this.errorPassword = response.data.errors.password[0]; 
                     }
                 }
             }).catch((error) => {

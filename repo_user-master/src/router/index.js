@@ -65,6 +65,13 @@ const routes = [
     }
   },
   {
+    path: '/order',
+    name: 'order',
+    component: function () {
+      return import(/* webpackChunkName: "Cart" */ '@/views/Order')
+    }
+  },
+  {
     path: '/fill-profile',
     name: 'fill-profile',
     component: function () {

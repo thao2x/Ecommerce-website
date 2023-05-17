@@ -21,8 +21,8 @@
                             <font-awesome-icon icon="fa-solid fa-location-dot" />
                         </div>
                         <div class="location__address--text">
-                            <p>{{ address.name }}</p>
-                            <span>{{ address.details }}</span>
+                            <p>{{ address?.name }}</p>
+                            <span>{{ address?.details }}</span>
                         </div>
                         <div class="location__address--edit">
                             <font-awesome-icon icon="fa-solid fa-pen" @click="showEditAddress = !showEditAddress" />
@@ -38,19 +38,20 @@
                         <template v-for="(item, index) in items">
                             <div class="cart" :key="index">
                                 <div class="cart__img">
-                                    <img :src="item.variant.product.images[0]?.src" />
+                                    <img :src="item?.variant?.product?.images[0]?.src" />
                                 </div>
                                 <div class="cart__info">
                                     <div class="cart__info--title">
-                                        <p>{{ item.variant.product.name }}</p>
+                                        <p>{{ item?.variant?.product?.name }}</p>
                                     </div>
                                     <div class="cart__info--size">
-                                        <p>Size: {{ item.variant.size }}</p>
+                                        <p>Size: {{ item?.variant?.size }}</p>
                                     </div>
                                     <div class="cart__info--price">
-                                        <p>${{ (item.variant.product.price * item.quantity).toLocaleString("en-IN") }}</p>
+                                        <p>${{ (item?.variant?.product?.price * item?.quantity).toLocaleString("en-IN") }}
+                                        </p>
                                         <div class="icon">
-                                            <p>{{ item.quantity }}</p>
+                                            <p>{{ item?.quantity }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +65,7 @@
                     <h3>Choose Shipping</h3>
                     <div class="shipping__type">
                         <select class="select-custom" v-model="shipping">
-                            <option :value="item.id" v-for="(item, index) in shippings" :key="index">{{ item.name }}
+                            <option :value="item.id" v-for="(item, index) in shippings" :key="index">{{ item?.name }}
                             </option>
                         </select>
                     </div>
@@ -75,7 +76,7 @@
                     <h3>Promo Code</h3>
                     <div class="promo__code">
                         <select class="select-custom" v-model="promo">
-                            <option :value="item.id" v-for="(item, index) in promos" :key="index">{{ item.name }}</option>
+                            <option :value="item.id" v-for="(item, index) in promos" :key="index">{{ item?.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -106,24 +107,38 @@
 
             <!-- Footer -->
             <div class="footer">
-                <button @click="complete()">Continue to Payment</button>
+                <button @click="complete()" >
+                    <font-awesome-icon :icon="['fas', 'gift']"/>
+                    Order</button>
             </div>
         </template>
 
         <!-- Popup edit address -->
-        <div class="content-x" v-if="showEditAddress">
-            <div class="table">
-                <h2>Edit Address</h2>
-                <div class="input-group">
-                    <input placeholder="Name" type="text" v-model="address.name" />
-                </div>
-                <div class="input-group">
-                    <input placeholder="Detail" type="text" v-model="address.details" />
-                </div>
-                <div class="delete__content--btn">
-                    <button class="btn--cancel" @click="showEditAddress = !showEditAddress">Cancel</button>
-                    <button class="btn--remove" @click="handleUpdateAddress()">Yes, Remove</button>
-                </div>
+        <div class="content-x" v-if="showEditAddress"></div>
+        <div class="table" :class="[{ 'is-hiden': !showEditAddress }]">
+            <h2>Edit Address</h2>
+            <div class="input-group">
+                <input placeholder="City" type="text" v-model="address.name" />
+            </div>
+            <div class="input-group">
+                <input placeholder="Detail" type="text" v-model="address.details" />
+            </div>
+            <div class="edit--btn">
+                <button class="btn--cancel" @click="showEditAddress = !showEditAddress">Cancel</button>
+                <button class="btn--remove" @click="handleUpdateAddress()">Ok</button>
+            </div>
+        </div>
+
+        <!-- Popup order success -->
+        <div class="cnt" id="qr1" v-if="success">
+            <div class="ctn_content">
+                <img src="@/assets/orderSuccess.png" alt="" />
+                <p>Order Successfull!</p>
+                <span>You have successfully made order.</span>
+                <button @click="nextPage()" :class="{ loadingButton: isActive }">
+                    <LoadingButton  v-if="isActive == false"/>
+                    OK  
+                </button>
             </div>
         </div>
     </div>
@@ -133,6 +148,7 @@
 import { mixin } from '@/mixin'
 import Loading from '@/components/Loading'
 import BackButton from '@/components/BackButton'
+import LoadingButton from '@/components/LoadingButton.vue'
 
 import { addAddress, getPromos, getShippings, addOrder } from "@/api";
 
@@ -142,6 +158,8 @@ export default {
     data() {
         return {
             showEditAddress: false,
+            success: false,
+            isActive: false,
             promos: [],
             shippings: [],
             loading: false,
@@ -152,7 +170,8 @@ export default {
 
     components: {
         BackButton,
-        Loading
+        Loading,
+        LoadingButton
     },
 
     created() {
@@ -244,8 +263,8 @@ export default {
         },
 
         complete() {
-            // Hiện loading
-            this.loading = true;
+            // Hiện popup
+            this.success = true;
             let data = {
                 shiping_address_id: this.address.id,
                 shipping_id: this.shipping,
@@ -256,14 +275,17 @@ export default {
             addOrder(data).then((response) => {
                 if (response.data.success) {
                     // Lưu data cart mới vào state vuex store
-                    // this.$store.commit('changeAddress', response.data.data);
+                    this.$store.commit('changeAddress', response.data.data);
                 }
             }).catch(() => {
             }).finally(() => {
-                // Ẩn loading
-                this.loading = false;
+                this.isActive = true;
             })
-        }
+        },
+
+        nextPage() {
+			this.goToPage('order');
+		}
     }
 }
 </script>
@@ -278,7 +300,7 @@ export default {
         height: 7vh;
         display: flex;
         align-items: center;
-        padding: 0 10px;
+        padding: 0 5%;
     }
 
     .content {
@@ -622,6 +644,10 @@ export default {
                 color: #000;
                 outline: 2px solid #000;
             }
+
+            svg {
+                margin-right: 10px;
+            }
         }
     }
 }
@@ -633,40 +659,171 @@ export default {
     height: 100vh;
     width: 100%;
     z-index: 1;
+}
 
-    // top: 50%;
-    // transform: translateY(-50%);
-    .table {
-        background-color: #fff;
-        width: 80%;
-        height: 50%;
-        position: absolute;
-        top: 5%;
-        left: 10%;
-        margin-top: 20px;
-        border-radius: 10px;
+.is-hiden {
+    transform: translateY(-500px);
+}
 
-        .input-group {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
+.table {
+    transition: all ease 0.8s;
+    background-color: #fff;
+    width: 90%;
+    height: auto;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    margin-top: 20px;
+    border-radius: 20px;
+    z-index: 2;
 
-            input {
-                font-family: system-ui;
-                font-size: 17px;
-                font-weight: 600;
-                width: calc(100% - 32px);
-                border: none;
-                padding: 17px 0px;
-                padding-left: 32px;
-                background-color: #cccccc45;
-                border-radius: 15px;
+    h2 {
+        font-size: 20px;
+        font-weight: 500;
+        text-align: center;
+        margin: 30px;
+    }
 
-                &:focus-visible {
-                    outline: 2px solid #686565;
-                }
+    .input-group {
+        position: relative;
+        width: 90%;
+        margin: auto;
+        margin-bottom: 20px;
+
+        input {
+            font-family: system-ui;
+            font-size: 17px;
+            font-weight: 400;
+            width: calc(100% - 20px);
+            border: none;
+            padding: 17px 0px;
+            padding-left: 20px;
+            background-color: rgb(204 204 204 / 21%);
+            outline: 2px solid #ccc;
+            border-radius: 15px;
+
+            &:focus-visible {
+                outline: 2px solid #1d9ce5c2;
             }
         }
     }
+
+    .edit--btn {
+        width: 90%;
+        margin: auto;
+        display: flex;
+        gap: 10px;
+        padding: 20px 0 40px 0;
+        font-size: 15px;
+        font-weight: 400;
+
+        .btn--cancel {
+            box-shadow: none;
+            background-color: #cfcfcf8a;
+            color: #000;
+            border-radius: 50px;
+            border: none;
+            padding: 5px 10px;
+            width: 100%;
+            box-shadow: 5px 10px 18px #888888;
+            font-family: system-ui;
+            transition: all .5s;
+        }
+
+        .btn--remove {
+            box-shadow: 5px 5px 15px #888888;
+            background-color: #000;
+            color: #fff;
+            border-radius: 50px;
+            border: none;
+            padding: 15px 10px;
+            width: 100%;
+            box-shadow: 5px 10px 18px #888888;
+            font-family: system-ui;
+            transition: all .5s;
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                background-color: #fff;
+                color: #000;
+                outline: 2px solid #000;
+            }
+        }
+    }
+}
+
+.cnt {
+    overflow: hidden;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 9999;
+    transition: 0.8s;
+    font-family: system-ui;
+    display: flex;
+    width: auto;
+    height: auto;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.ctn_content {
+    font-family: system-ui;
+    border-radius: 36px;
+    background-color: #fff;
+    width: 80%;
+    height: 50%;
+    margin: auto;
+    a-webkit-animation-name: example;
+    -webkit-animation-duration: 1s;
+    animation-name: example;
+    animation-duration: 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    img {
+        width: 60%;
+        height: 40%;
+    }
+
+    p {
+        width: 85%;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    button {
+        background-color: #8b8b8b;
+        color: #fff;
+        border-radius: 50px;
+        border: none;
+        padding: 15px 20px;
+        width: 80%;
+        box-shadow: 5px 10px 18px #888888;
+        font-size: 20px;
+        font-family: system-ui;
+        font-weight: 500;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin: 30px 0;
+
+        &:hover,
+        &:focus {
+            background-color: #fff;
+            color: #000;
+            outline: 2px solid #000;
+        }
+    }
+    
+    .loadingButton {
+            background-color: #000;
+        }
 }
 </style>

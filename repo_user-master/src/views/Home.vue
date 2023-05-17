@@ -13,7 +13,7 @@
                 </div>
                 <div class="header__intro--text">
                     <p>{{ greet }}<font-awesome-icon icon="fa-solid fa-hand-peace" /></p>
-                    <span>{{ user?.full_name }}</span>
+                    <span>{{ user?.nick_name }}</span>
                 </div>
             </div>
             <div class="header__btn">

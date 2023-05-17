@@ -57,9 +57,9 @@
                         <span>${{ product.price * quantity }}</span>
                     </div>
                     <div class="total__btn">
-                        <button @click="addToCart()">
+                        <button @click="addToCart()" :class="{ loadingButton: isActive }">
                             <font-awesome-icon icon="fa-solid fa-bag-shopping" v-if="!loadingButton" />
-                            <LoadingButton v-else/>
+                            <LoadingButton v-else />
                             <span>Add to Cart</span>
                         </button>
                     </div>
@@ -78,7 +78,6 @@ import LoadingButton from '@/components/LoadingButton.vue'
 
 import { getProductById, addProductToCart } from "@/api";
 import { mixin } from '@/mixin'
-import LoadingButtonVue from '../components/LoadingButton.vue';
 
 export default {
     mixins: [mixin],
@@ -92,6 +91,7 @@ export default {
         return {
             loading: true,
             readmore: true,
+            isActive: false,
             quantity: 1,
             product: {},
             variantId: null,
@@ -116,10 +116,11 @@ export default {
         addToCart: function () {
             // Hiện loading
             this.loadingButton = true;
+            this.isActive = true;
 
-            let data = { 
-                variant_id: this.variantId, 
-                quantity: this.quantity 
+            let data = {
+                variant_id: this.variantId,
+                quantity: this.quantity
             }
 
             // Them san pham
@@ -127,7 +128,7 @@ export default {
                 if (response.data.success) {
                     // Lưu data cart mới vào state vuex store
                     this.$store.commit('changeCartItems', response.data.data);
-                    
+
                     this.goToPage('cart');
                 }
             }).catch(() => {
@@ -268,7 +269,8 @@ export default {
                     }
                 }
             }
-            .active{
+
+            .active {
                 background-color: #000;
                 color: #fff;
                 border-radius: 50%;
@@ -358,13 +360,19 @@ export default {
                     width: 100%;
                     padding: 15px 30px;
                     font-size: 18px;
+                    display: flex;
                     color: #fff;
                     box-shadow: 5px 10px 18px #888888;
+                    align-items: center;
+                    justify-content: space-evenly;
 
                     svg {
                         color: #fff;
                         padding-right: 10px;
                     }
+                }
+                .loadingButton {
+                    background-color: #8b8b8b;
                 }
             }
         }
