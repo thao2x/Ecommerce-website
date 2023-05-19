@@ -11,9 +11,10 @@ use App\Models\Product;
 
 class Variant extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'product_id', 'size', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',
@@ -25,13 +26,13 @@ class Variant extends Model
         return $this->belongsTo(Product::class, 'product_id');
     }
 
-    public function cart_items(): HasMany
+    public function cartItems(): HasMany
     {
-    	return $this->hasMany('cart_items', 'variant_id');
+        return $this->hasMany(CartItem::class, 'cart_items', 'variant_id');
     }
 
-    public function order_items(): HasMany
+    public function orderItems(): HasMany
     {
-    	return $this->hasMany('order_items', 'variant_id');
+        return $this->hasMany(OrderItem::class, 'order_items', 'variant_id');
     }
 }

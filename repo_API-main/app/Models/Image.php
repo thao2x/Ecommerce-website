@@ -10,9 +10,10 @@ use App\Models\Product;
 
 class Image extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'product_id', 'src'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',

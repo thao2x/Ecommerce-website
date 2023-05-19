@@ -17,7 +17,6 @@ class CustomerTableSeeder extends Seeder
         $password = Hash::make('password');
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -30,7 +29,6 @@ class CustomerTableSeeder extends Seeder
         ]);
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -43,7 +41,6 @@ class CustomerTableSeeder extends Seeder
         ]);
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -56,7 +53,6 @@ class CustomerTableSeeder extends Seeder
         ]);
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -69,7 +65,6 @@ class CustomerTableSeeder extends Seeder
         ]);
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -82,7 +77,6 @@ class CustomerTableSeeder extends Seeder
         ]);
 
         Customer::create([
-            'id' => $faker->uuid,
             'full_name' => $faker->name,
             'nick_name' => $faker->name,
             'dob' => '00/00/0000',
@@ -93,6 +87,5 @@ class CustomerTableSeeder extends Seeder
             'avatar' => 'https://i.pinimg.com/originals/d9/19/7a/d9197a962e07ac58619f14452b5378a9.jpg',
             'pin' => '1111'
         ]);
-
     }
 }

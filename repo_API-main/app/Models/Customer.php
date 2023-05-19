@@ -9,35 +9,37 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Cart_Item;
-use App\Models\Shipping_address;
+use App\Models\ShippingAddress;
 use App\Models\Order;
 
 class Customer extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use HasUuids;
 
     protected $guard = 'api-customer';
 
-    
-    protected $fillable = ['id', 'full_name', 'nick_name', 'dob', 'email', 'password', 'phone', 'gender', 'avatar', 'pin', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',
         'created_at' => 'datetime:Y-m-d'
     ];
 
-    public function cart_items(): HasMany
+    public function cartItems(): HasMany
     {
-    	return $this->hasMany(Cart_Item::class, 'customer_id', 'id');
+        return $this->hasMany(Cart_Item::class, 'customer_id', 'id');
     }
 
     public function orders(): HasMany
     {
-    	return $this->hasMany(Order::class, 'customer_id', 'id');
+        return $this->hasMany(Order::class, 'customer_id', 'id');
     }
 
-    public function shipping_address(): HasMany
+    public function shippingAddress(): HasMany
     {
-    	return $this->hasMany(Shipping_address::class, 'customer_id', 'id');
+        return $this->hasMany(ShippingAddress::class, 'customer_id', 'id');
     }
 }

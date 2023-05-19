@@ -10,9 +10,10 @@ use App\Models\Order;
 
 class Promo extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'name', 'percentage', 'description', 'active_flg', 'published_at', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',

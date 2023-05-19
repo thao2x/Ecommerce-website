@@ -4,45 +4,60 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Cart_Item;
+use Illuminate\Support\Facades\Auth;
+use App\Models\CartItem;
 
 class CartController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return [type]
+     *
+     */
     public function index()
     {
-        $customer = \Auth::guard('api-customer')->user();
-        $cartItems = Cart_Item::with('variant.product.images')->where('customer_id', $customer->id)->get();
-        
+        $customer = Auth::guard('api-customer')->user();
+        $cart = CartItem::with('variant.product.images')->where('customer_id', $customer->id)->get();
+
         return response()->json([
-            'success' => true,
-            'data' => $cartItems
-        ], 200);
+            'status' => true,
+            'message' => "List of products in cart.",
+            'data' => $cart
+        ], Response::HTTP_OK);
     }
 
-    public function update(Request $request, string $itemId)
-    {
-        // Update data
-        Cart_Item::find($itemId)->update([
-            'quantity' => $request['quantity']
-        ]);
-        
-        $customer = \Auth::guard('api-customer')->user();
-        $cartItems = Cart_Item::with('variant.product.images')->where('customer_id', $customer->id)->get();
-        
-        return response()->json([
-            'success' => true,
-            'data' => $cartItems
-        ], 200);
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     *
+     */
     public function store(Request $request)
-    {                
-        $customer = \Auth::guard('api-customer')->user();
-        $item = Cart_Item::where('variant_id',  $request['variant_id'])->where('customer_id', $customer->id)->first();
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => ['required'],
+            'variant_id' => ['required'],
+            'quantity' => ['required']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
+        }
+
+        $customer = Auth::guard('api-customer')->user();
+        $item = CartItem::where('variant_id', $request['variant_id'])->where('customer_id', $customer->id)->first();
 
         if ($item == null) {
-            Cart_Item::create([
+            CartItem::create([
                 'customer_id' => $customer->id,
                 'variant_id' => $request['variant_id'],
                 'quantity' => $request['quantity']
@@ -54,25 +69,71 @@ class CartController extends Controller
             ]);
         }
 
-        $cartItems = Cart_Item::with('variant.product.images')->where('customer_id', $customer->id)->get();
-        
+        $cart = CartItem::with('variant.product.images')->where('customer_id', $customer->id)->get();
+
         return response()->json([
             'success' => true,
-            'data' => $cartItems
-        ], 200);
+            'message' => "Product added successfully",
+            'data' => $cart
+        ], Response::HTTP_CREATED);
     }
 
-    public function destroy(string $itemId)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param CartItem $cartItem
+     *
+     * @return [type]
+     *
+     */
+    public function update(Request $request, CartItem $cartItem)
     {
-        // Delete data
-        Cart_Item::find($itemId)->delete();
-        
-        $customer = \Auth::guard('api-customer')->user();
-        $cartItems = Cart_Item::with('variant.product.images')->where('customer_id', $customer->id)->get();
-        
+        $validator = Validator::make($request->all(), [
+            'quantity' => ['required']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
+        }
+
+        $cartItem->update([
+            'quantity' => $request['quantity']
+        ]);
+
+        $customer = Auth::guard('api-customer')->user();
+        $cart = CartItem::with('variant.product.images')->where('customer_id', $customer->id)->get();
+
         return response()->json([
             'success' => true,
-            'data' => $cartItems
-        ], 200);
+            'message' => "Product updated successfully",
+            'data' => $cart
+        ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param CartItem $cartItem
+     *
+     * @return [type]
+     *
+     */
+    public function destroy(CartItem $cartItem)
+    {
+        $cartItem->delete();
+
+        $customer = Auth::guard('api-customer')->user();
+        $cart = CartItem::with('variant.product.images')->where('customer_id', $customer->id)->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product deleted successfully',
+            'data' => $cart
+        ], Response::HTTP_OK);
     }
 }

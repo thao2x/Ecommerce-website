@@ -1,50 +1,73 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\PromoController;
+use App\Http\Controllers\Api\ShippingController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PopularController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes private
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
-
 Route::middleware(['auth:api-customer'])->group(function () {
-	Route::get('/customer', [App\Http\Controllers\Api\CustomerController::class, 'index'])->name('api.customer.index');
-	Route::post('/customer', [App\Http\Controllers\Api\CustomerController::class, 'update'])->name('api.customer.update');
-	
-	Route::get('/address', [App\Http\Controllers\Api\AddressController::class, 'index'])->name('api.address.index');
-	Route::post('/address', [App\Http\Controllers\Api\AddressController::class, 'store'])->name('api.address.store');
+    // Auth routes
+    Route::get('/logout', [AuthController::class, 'logout']);
 
-	Route::get('/cart', [App\Http\Controllers\Api\CartController::class, 'index'])->name('api.cart.index');
-	Route::post('/cart', [App\Http\Controllers\Api\CartController::class, 'store'])->name('api.cart.store');
-	Route::post('/cart/{itemId}', [App\Http\Controllers\Api\CartController::class, 'update'])->name('api.cart.update');
-	Route::delete('/cart/{itemId}', [App\Http\Controllers\Api\CartController::class, 'destroy'])->name('api.cart.destroy');
+    // Customer routes
+    Route::get('/customer', [CustomerController::class, 'index']);
+    Route::post('/customer', [CustomerController::class, 'update']);
 
-	Route::get('/order', [App\Http\Controllers\Api\OrderController::class, 'index'])->name('api.order.index');
-	Route::post('/order', [App\Http\Controllers\Api\OrderController::class, 'store'])->name('api.order.store');
-	Route::get('/order/{orderId}', [App\Http\Controllers\Api\OrderController::class, 'show'])->name('api.order.show');
-	
-	Route::get('/category', [App\Http\Controllers\Api\CategoryController::class, 'index'])->name('api.category.index')->withoutMiddleware(['auth:api-customer']);
-	Route::get('/category/{categoryId}', [App\Http\Controllers\Api\CategoryController::class, 'search'])->name('api.category.search')->withoutMiddleware(['auth:api-customer']);
-	
-	Route::get('/promos', [App\Http\Controllers\Api\PromoController::class, 'index'])->name('api.promo.index')->withoutMiddleware(['auth:api-customer']);
+    // Address routes
+    Route::get('/address', [AddressController::class, 'index']);
+    Route::post('/address', [AddressController::class, 'store']);
+    Route::post('/address/{id}', [AddressController::class, 'update']);
 
-	Route::get('/shippings', [App\Http\Controllers\Api\ShippingController::class, 'index'])->name('api.shipping.index')->withoutMiddleware(['auth:api-customer']);
-	
-	Route::get('/product', [App\Http\Controllers\Api\ProductController::class, 'index'])->name('api.product.index')->withoutMiddleware(['auth:api-customer']);
-	Route::get('/product/{productId}', [App\Http\Controllers\Api\ProductController::class, 'show'])->name('api.product.show')->withoutMiddleware(['auth:api-customer']);
-	
-	Route::get('/search', [App\Http\Controllers\Api\ProductController::class, 'search'])->name('api.search.index')->withoutMiddleware(['auth:api-customer']);
-	
-	Route::get('/popular', [App\Http\Controllers\Api\PopularController::class, 'index'])->name('api.popular.index')->withoutMiddleware(['auth:api-customer']);
-	Route::get('/popular/{popularId}', [App\Http\Controllers\Api\PopularController::class, 'show'])->name('api.popular.show')->withoutMiddleware(['auth:api-customer']);
-	
-	Route::get('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout'])->name('api.logout');
-	Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login'])->name('api.login')->withoutMiddleware(['auth:api-customer']);
-	Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register'])->name('api.register')->withoutMiddleware(['auth:api-customer']);
+    // Cart routes
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::post('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+
+    // Order routes
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| API Routes public
+|--------------------------------------------------------------------------
+*/
+Route::withoutMiddleware(['auth:api-customer'])->group(function () {
+    // Auth routes
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+
+    // Category routes
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{id}', [CategoryController::class, 'search']);
+
+    // Promo routes
+    Route::get('/promos', [PromoController::class, 'index']);
+
+    // Shipping routes
+    Route::get('/shipping', [ShippingController::class, 'index']);
+
+    // Product routes
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::get('/search', [ProductController::class, 'search']);
+
+    // Popular routes
+    Route::get('/populars', [PopularController::class, 'index']);
+    Route::get('/populars/{id}', [PopularController::class, 'show']);
 });

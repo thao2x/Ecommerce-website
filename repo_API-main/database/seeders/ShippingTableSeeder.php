@@ -12,11 +12,8 @@ class ShippingTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
-
         // And now, let's create a few articles in our database:
         Shipping::create([
-            'id' => $faker->uuid,
             'name' => 'COD',
             'description' => 'Cash on Delivery (COD)',
             'price' => 550

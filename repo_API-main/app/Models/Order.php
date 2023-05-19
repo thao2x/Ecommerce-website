@@ -7,28 +7,27 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Customer;
-use App\Models\Order_Item;
-use App\Models\Shipment;
-use App\Models\Shipping_address;
+use App\Models\OrderItem;
+use App\Models\ShippingAddress;
 use App\Models\Shipping;
 use App\Models\Promo;
 
 class Order extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'customer_id', 'shiping_address_id', 'shipping_id', 'promo_id', 'code', 'status', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',
         'created_at' => 'datetime:Y-m-d'
     ];
 
-    public function order_items(): HasMany
+    public function orderItems(): HasMany
     {
-    	return $this->hasMany(Order_Item::class, 'order_id', 'id');
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
     }
 
     public function customer(): BelongsTo
@@ -36,9 +35,9 @@ class Order extends Model
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
-    public function shipping_address(): BelongsTo
+    public function shippingAddress(): BelongsTo
     {
-        return $this->belongsTo(Shipping_address::class, 'shiping_address_id', 'id');
+        return $this->belongsTo(ShippingAddress::class, 'shiping_address_id', 'id');
     }
 
     public function shipping(): BelongsTo

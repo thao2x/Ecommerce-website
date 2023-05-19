@@ -19,7 +19,6 @@ class PromoTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             $percentage = $faker->randomElement([10, 20]);
             Promo::create([
-                'id' => $faker->uuid,
                 'name' => $faker->regexify('[A-Z]{5}[0-4]{5}'),
                 'description' => "Giảm " . $percentage . " toàn bộ đơn hàng.",
                 'published_at' => Carbon::now(),

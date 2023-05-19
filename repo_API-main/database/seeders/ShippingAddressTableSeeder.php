@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Shipping_address;
+use App\Models\ShippingAddress;
 use App\Models\Customer;
 
 class ShippingAddressTableSeeder extends Seeder
@@ -17,9 +17,8 @@ class ShippingAddressTableSeeder extends Seeder
 
         $customers = Customer::all();
 
-        foreach($customers as $customer) {
-            Shipping_address::create([
-                'id' => $faker->uuid,
+        foreach ($customers as $customer) {
+            ShippingAddress::create([
                 'customer_id' => $customer->id,
                 'name' => $faker->randomElement(['Da nang', 'Quang Nam', 'Binh Dinh']),
                 'details' => $faker->randomElement(['02 Quang Trung, Hai Chau, Đà Nẵng', 'Điện Thắng, Điện bàn, Quảng Nam', 'Mỹ Trang, Mỹ Châu, Phù Mỹ, Binh Dinh']),

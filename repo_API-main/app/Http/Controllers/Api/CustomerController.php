@@ -2,23 +2,42 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Customer;
 
 class CustomerController extends Controller
 {
+    /**
+     * Get user information
+     *
+     * @return [type]
+     *
+     */
     public function index()
     {
-        $customer = \Auth::guard('api-customer')->user();
+        $customer = Auth::guard('api-customer')->user();
+
         return response()->json([
-            'success' => true,
+            'status' => true,
+            'message' => "User information",
             'data' => $customer
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
-    public function update(Request $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param Customer $customer
+     *
+     * @return [type]
+     *
+     */
+    public function update(Request $request, Customer $customer)
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
@@ -27,18 +46,18 @@ class CustomerController extends Controller
             'nick_name' => ['required'],
             'dob' => ['string'],
             'phone' => ['string'],
-            'gender' => ['string'],
-            // 'avatar' => ['string'],
+            'gender' => ['string']
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
         }
 
-        Customer::find($request['id'])->update([
+        $customer->update([
             'full_name' => $request['full_name'],
             'nick_name' => $request['nick_name'],
             'dob' => $request['dob'],
@@ -50,11 +69,10 @@ class CustomerController extends Controller
             'pin' => $request['pin']
         ]);
 
-        $customer = Customer::find($request['id']);
-
         return response()->json([
             'success' => true,
+            'message' => "User updated successfully",
             'data' => $customer
-        ], 200);
+        ], Response::HTTP_CREATED);
     }
 }

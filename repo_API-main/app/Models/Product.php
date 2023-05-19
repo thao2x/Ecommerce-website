@@ -14,9 +14,10 @@ use App\Models\User;
 
 class Product extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'category_id', 'user_id', 'name', 'type', 'price', 'description', 'rating', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',
@@ -25,16 +26,16 @@ class Product extends Model
 
     public function variants(): HasMany
     {
-    	return $this->hasMany(Variant::class, 'product_id');
+        return $this->hasMany(Variant::class, 'product_id');
     }
 
     public function images(): HasMany
     {
-    	return $this->hasMany(Image::class, 'product_id');
+        return $this->hasMany(Image::class, 'product_id');
     }
 
     public function user(): BelongsTo
-    {   
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 

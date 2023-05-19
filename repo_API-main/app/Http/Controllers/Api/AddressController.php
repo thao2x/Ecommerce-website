@@ -3,47 +3,100 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
-use App\Models\Shipping_address;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return [type]
+     *
+     */
     public function index()
     {
-        $customer = \Auth::guard('api-customer')->user();
-        $address = Shipping_address::where('customer_id', $customer->id)->first();
+        $user = Auth::guard('api-customer')->user();
+        $address = ShippingAddress::where('customer_id', $user->id)->get();
 
         return response()->json([
-            'success' => true,
+            'status' => true,
+            'message' => "List of shipping addresses",
             'data' => $address
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     *
+     */
     public function store(Request $request)
     {
-        $customer = \Auth::guard('api-customer')->user();
-        $item = Shipping_address::where('customer_id', $customer->id)->first();
+        $validator = Validator::make($request->all(), [
+            'customer_id' => ['required'],
+            'name' => ['required'],
+            'details' => ['required'],
+            'default_flg' => ['required']
+        ]);
 
-        if ($item == null) {
-            Shipping_address::create([
-                'customer_id' => $customer->id,
-                'name' => $request['name'],
-                'details' => $request['details'],
-                'default_flg' => 1
-            ]);
-        } else {
-            $item->update([
-                'name' => $request['name'],
-                'details' => $request['details'],
-            ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
         }
-        
-        $address = Shipping_address::where('customer_id', $customer->id)->first();
+
+        $address = ShippingAddress::create($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => "Address added successfully.",
+            'data' => $address
+        ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param ShippingAddress $address
+     *
+     * @return [type]
+     *
+     */
+    public function update(Request $request, ShippingAddress $address)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => ['required'],
+            'name' => ['required'],
+            'details' => ['required'],
+            'default_flg' => ['required']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
+        }
+
+        $address->update([
+            'name' => $request['name'],
+            'details' => $request['details'],
+        ]);
 
         return response()->json([
             'success' => true,
+            'message' => "Address updated successfully",
             'data' => $address
-        ], 200);
+        ], Response::HTTP_CREATED);
     }
 }

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Promo;
 
 class PromoController extends Controller
 {
     public function index()
     {
-        $promos = Promo::all();
+        $data = Promo::all();
 
         return response()->json([
             'success' => true,
-            'data' => $promos
+            'data' => $data
         ], 200);
     }
 }

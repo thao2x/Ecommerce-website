@@ -16,7 +16,7 @@ class ImagesTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $products = Product::all();
 
-        foreach($products as $product) {
+        foreach ($products as $product) {
             for ($i = 0; $i < $faker->randomElement([5, 12, 6, 10]); $i++) {
                 Image::create([
                     'id' => $faker->uuid,

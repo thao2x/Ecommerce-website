@@ -3,45 +3,65 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Customer;
 
 class AuthController extends Controller
 {
+    /**
+     * [Description for login]
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     *
+     */
     public function login(Request $request)
     {
-        $messages = [
-            'email.required' => 'Trường email là bắt buộc.',
-            'descrpasswordiption.required' => 'Trường password là bắt buộc.',
-            'email' => 'Email phải là một địa chỉ email hợp lệ.',
-        ];
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
-        ], $messages);
+        ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
         }
 
-        if (\Auth::guard('customer')->attempt(["email" => $request['email'], "password" => $request['password']])) {
-            $user = \Auth::guard('customer')->user();
-            $token = $user->createToken('My Token')->accessToken;
-
+        if (!Auth::guard('customer')->attempt(["email" => $request['email'], "password" => $request['password']])) {
             return response()->json([
-                'success' => true,
-                'token' => $token,
-                'data' => $user
-            ], 200);
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => []
+            ], Response::HTTP_UNAUTHORIZED);
         }
+
+        $user = Auth::guard('customer')->user();
+        $token = $user->createToken('Token')->accessToken;
+
+        return response()->json([
+            'success' => true,
+            'token' => $token,
+            'data' => $user
+        ], Response::HTTP_OK);
     }
 
+    /**
+     * [Description for register]
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     *
+     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -59,12 +79,12 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
+                'message' => 'Data check error.',
+                'data' => $validator->errors()
+            ], Response::HTTP_OK);
         }
 
-	    $password = Hash::make($request['password']);
-
+        $password = Hash::make($request['password']);
         $customer = Customer::create([
             'full_name' => $request['full_name'],
             'nick_name' => $request['nick_name'],
@@ -77,20 +97,41 @@ class AuthController extends Controller
             'pin' => $request['pin']
         ]);
 
-        $token = $customer->createToken('My Token')->accessToken;
+        Mail::send(
+            'mail.new-account',
+            array(
+                'text' => 'Welcome ' . $customer->nick_name,
+                'email' => $request['email'],
+                'password' => $password,
+            ),
+            function ($message) use ($request) {
+                $message->to($request['email'], 'POJO')->subject('Welcome to the POJO!');
+            }
+        );
+
+        $token = $customer->createToken('Token')->accessToken;
+
         return response()->json([
             'success' => true,
             'token' => $token,
             'data' => $customer
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
+    /**
+     * [Description for logout]
+     *
+     * @return [type]
+     *
+     */
     public function logout()
     {
-        $accessToken = \Auth::guard('api-customer')->user()->token();
+        $accessToken = Auth::guard('api-customer')->user()->token();
         $accessToken->revoke();
+
         return response()->json([
-            'success' => true
-        ], 200);
+            'success' => true,
+            'message' => 'You have exited the application and the token has been removed'
+        ], Response::HTTP_OK);
     }
 }

@@ -9,11 +9,11 @@ class ShippingController extends Controller
 {
     public function index()
     {
-        $shippings = Shipping::all();
-        
+        $data = Shipping::all();
+
         return response()->json([
             'success' => true,
-            'data' => $shippings
+            'data' => $data
         ], 200);
     }
 }

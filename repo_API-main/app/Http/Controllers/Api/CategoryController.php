@@ -2,28 +2,46 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
+use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Category;
 use App\Models\Product;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return [type]
+     *
+     */
     public function index()
     {
         $categories = Category::all();
-        
+
         return response()->json([
-            'success' => true,
+            'status' => true,
+            'message' => "List of product categories",
             'data' => $categories
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
-    public function search(string $categoryId) {
-        $products = Product::with('images', 'variants', 'categories')->where('category_id', $categoryId)->get();
-        
+    /**
+     * Search products by product category
+     *
+     * @param Category $category
+     *
+     * @return [type]
+     *
+     */
+    public function search(Category $category)
+    {
+        $products = Product::with('images', 'variants', 'categories')->where('category_id', $category->id)->get();
+
         return response()->json([
             'success' => true,
+            'message' => "List of products by product category",
             'data' => $products
-        ], 200);
+        ], Response::HTTP_OK);
     }
 }

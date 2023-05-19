@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('shiping_address_id')->references('id')->on('shipping_addresses');
+            $table->foreign('shiping_address_id')->references('id')->on('ShippingAddresses');
             $table->foreign('shipping_id')->references('id')->on('shippings');
             $table->foreign('promo_id')->references('id')->on('promos');
         });

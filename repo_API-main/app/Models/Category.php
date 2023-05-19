@@ -10,9 +10,10 @@ use App\Models\Product;
 
 class Category extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
-    protected $fillable = ['id', 'name', 'description', 'image', 'del_flg'];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'string',
