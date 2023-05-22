@@ -6,37 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Response;
 use App\Models\Customer;
 
 class CustomerController extends Controller
 {
-    /**
-     * Get user information
-     *
-     * @return [type]
-     *
-     */
     public function index()
     {
         $customer = Auth::guard('api-customer')->user();
 
         return response()->json([
             'status' => true,
-            'message' => "User information",
             'data' => $customer
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Customer $customer
-     *
-     * @return [type]
-     *
-     */
     public function update(Request $request, Customer $customer)
     {
         $validator = Validator::make($request->all(), [
@@ -54,7 +37,7 @@ class CustomerController extends Controller
                 'success' => false,
                 'message' => 'Data check error.',
                 'data' => $validator->errors()
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         $customer->update([
@@ -73,6 +56,6 @@ class CustomerController extends Controller
             'success' => true,
             'message' => "User updated successfully",
             'data' => $customer
-        ], Response::HTTP_CREATED);
+        ], 201);
     }
 }

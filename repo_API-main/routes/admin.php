@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\UserController;
 Route::middleware(['auth'])->group(function () {
 
     // Auth routes
-    Route::view('/login', 'layout.login')->name('guest')->withoutMiddleware(['auth']);
+    Route::view('/login', 'layout.auth')->name('guest')->withoutMiddleware(['auth']);
     Route::post('/login', [AuthController::class, 'login'])->name('admin.login')->withoutMiddleware(['auth']);
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 

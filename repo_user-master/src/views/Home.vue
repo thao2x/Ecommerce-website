@@ -5,7 +5,7 @@
             <div class="header__intro">
                 <div class="header__intro--img">
                     <template v-if="user?.avatar">
-                        <img :src="user?.avatar" />
+                        <img :src="getCurrentImage(user?.avatar)" />
                     </template>
                     <template v-else>
                         <img :src="avatar" />
@@ -53,7 +53,7 @@
             <div class="logo" v-for="(category, index) in categories" :key="index"
                 @click="goToPageById('category', category.id)">
                 <div class="logo--img">
-                    <img :src="category.image">
+                    <img :src="getCurrentImage(category.image)">
                 </div>
                 <div class="logo--text">
                     <p>{{ category.name }}</p>

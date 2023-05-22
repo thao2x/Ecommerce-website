@@ -1,7 +1,7 @@
 <template>
     <div class="slides">
         <div class="slides__img" v-for="(image, index) in images" :key="index">
-            <img :src="image.src" alt="" v-if="index == active">
+            <img :src="getCurrentImage(image.src)" alt="" v-if="index == active">
         </div>
 
         <span class="prev" @click="prev()">
@@ -20,7 +20,9 @@
 </template>
   
 <script>
+import { mixin } from '@/mixin'
 export default {
+    mixins: [mixin],
     props: {
         images: {
             type: [],

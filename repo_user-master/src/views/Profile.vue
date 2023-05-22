@@ -9,7 +9,7 @@
 
             <!-- upload Pic -->
             <div class="profile-pic">
-                <img :src="!srcImg ? user?.avatar : srcImg" id="photo" />
+                <img :src="getCurrentImage(!srcImg ? user?.avatar : srcImg)" id="photo" />
             </div>
 
             <!-- infor -->
@@ -94,9 +94,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mixin } from '@/mixin'
 
 export default {
+    mixins: [mixin],
     components: {
     },
     data() {

@@ -13,8 +13,10 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // Let's make sure everyone has the same password and
-        // let's hash it before the loop, or else our seeder
+        $faker = \Faker\Factory::create();
+
+        // Let's make sure everyone has the same password and 
+        // let's hash it before the loop, or else our seeder 
         // will be too slow.
         $password = Hash::make('password');
 
@@ -23,7 +25,7 @@ class UsersTableSeeder extends Seeder
             'dob' => '09/21/22',
             'email' => 'admin@test.com',
             'password' => $password,
-            'avatar' => 'https://i.pinimg.com/originals/76/18/38/761838420398ec0b0b412b46b71f2ab2.jpg'
+            'avatar' => '\images\user\avatar.jpg'
         ]);
     }
 }

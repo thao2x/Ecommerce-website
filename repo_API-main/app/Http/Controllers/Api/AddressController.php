@@ -7,16 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return [type]
-     *
-     */
     public function index()
     {
         $user = Auth::guard('api-customer')->user();
@@ -26,17 +19,9 @@ class AddressController extends Controller
             'status' => true,
             'message' => "List of shipping addresses",
             'data' => $address
-        ], Response::HTTP_OK);
+        ], 200);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     *
-     * @return [type]
-     *
-     */
+    
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -51,7 +36,7 @@ class AddressController extends Controller
                 'success' => false,
                 'message' => 'Data check error.',
                 'data' => $validator->errors()
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         $address = ShippingAddress::create($request->all());
@@ -59,18 +44,9 @@ class AddressController extends Controller
             'success' => true,
             'message' => "Address added successfully.",
             'data' => $address
-        ], Response::HTTP_CREATED);
+        ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param ShippingAddress $address
-     *
-     * @return [type]
-     *
-     */
     public function update(Request $request, ShippingAddress $address)
     {
         $validator = Validator::make($request->all(), [
@@ -85,7 +61,7 @@ class AddressController extends Controller
                 'success' => false,
                 'message' => 'Data check error.',
                 'data' => $validator->errors()
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         $address->update([
@@ -97,6 +73,6 @@ class AddressController extends Controller
             'success' => true,
             'message' => "Address updated successfully",
             'data' => $address
-        ], Response::HTTP_CREATED);
+        ], 201);
     }
 }

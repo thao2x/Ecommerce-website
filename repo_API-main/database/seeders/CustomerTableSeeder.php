@@ -24,7 +24,7 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456781',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/c4/20/f9/c420f9bec9be8fa4a4e453dae12976e0.jpg',
+            'avatar' => '\images\customers\customer_1.jpg',
             'pin' => '1111'
         ]);
 
@@ -36,7 +36,7 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456782',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/39/0c/c4/390cc4cfcf91d382fd60c8f4c56de062.jpg',
+            'avatar' => '\images\customers\customer_2.jpg',
             'pin' => '1111'
         ]);
 
@@ -48,7 +48,7 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456783',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/50/25/c9/5025c986369e95165b9ed12436255479.jpg',
+            'avatar' => '\images\customers\customer_3.jpg',
             'pin' => '1111'
         ]);
 
@@ -60,7 +60,7 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456784',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/c2/52/d4/c252d4a0cdfdd87ef9db9a7149697b88.jpg',
+            'avatar' => '\images\customers\customer_4.jpg',
             'pin' => '1111'
         ]);
 
@@ -72,7 +72,7 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456785',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/31/ff/45/31ff45defb6d5785bc11f3ad1b92dd64.jpg',
+            'avatar' => '\images\customers\customer_5.jpg',
             'pin' => '1111'
         ]);
 
@@ -84,8 +84,9 @@ class CustomerTableSeeder extends Seeder
             'password' => $password,
             'phone' => '0123456786',
             'gender' => $faker->randomElement(['male', 'female']),
-            'avatar' => 'https://i.pinimg.com/originals/d9/19/7a/d9197a962e07ac58619f14452b5378a9.jpg',
+            'avatar' => '\images\customers\customer_6.jpg',
             'pin' => '1111'
         ]);
+
     }
 }

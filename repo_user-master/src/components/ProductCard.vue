@@ -1,7 +1,7 @@
 <template>
     <div class="product__cart" @click="goToPageById('product', product.id)">
         <div class="product__cart--img">
-            <img :src="product.images[0]?.src" alt="">
+            <img :src="getCurrentImage(product.images[0]?.src)" alt="">
             <div class="heart">
                 <font-awesome-icon icon="fa-solid fa-heart" />
             </div>

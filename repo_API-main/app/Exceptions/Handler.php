@@ -32,40 +32,40 @@ class Handler extends ExceptionHandler
         });
     }
 
-    // public function render($request, Throwable $exception)
-    // {
-    //     if ($request->wantsJson()) {
-    //         if ($exception instanceof AuthenticationException) {
-    //             return response()->json([
-    //                 'message' => 'Unauthenticated',
-    //             ], 401);
-    //         }
+    public function render($request, Throwable $exception)
+    {
+        if ($request->wantsJson()) {
+            if ($exception instanceof AuthenticationException) {
+                return response()->json([
+                    'message' => 'Unauthenticated',
+                ], 401);
+            }
 
-    //         if ($exception instanceof NotFoundHttpException) {
-    //             return response()->json([
-    //                 'message' => 'Not Found',
-    //             ], 404);
-    //         }
+            if ($exception instanceof NotFoundHttpException) {
+                return response()->json([
+                    'message' => 'Not Found',
+                ], 404);
+            }
 
-    //         if ($exception instanceof MethodNotAllowedHttpException) {
-    //             return response()->json([
-    //                 'message' => 'Method Not Allowed',
-    //             ], 405);
-    //         }
+            if ($exception instanceof MethodNotAllowedHttpException) {
+                return response()->json([
+                    'message' => 'Method Not Allowed',
+                ], 405);
+            }
 
-    //         if ($exception instanceof UnauthorizedHttpException) {
-    //             return response()->json([
-    //                 'message' => 'Forbidden',
-    //             ], 403);
-    //         }
+            if ($exception instanceof UnauthorizedHttpException) {
+                return response()->json([
+                    'message' => 'Forbidden',
+                ], 403);
+            }
 
-    //         return response()->json([
-    //             'message' => 'Whoops, looks like something went wrong',
-    //             ], 500);
-    //     } else {
-    //         $retval = parent::render($request, $exception);
-    //     }
+            return response()->json([
+                'message' => 'Whoops, looks like something went wrong',
+                ], 500);
+        } else {
+            $retval = parent::render($request, $exception);
+        }
 
-    //     return $retval;
-    // }
+        return $retval;
+    }
 }

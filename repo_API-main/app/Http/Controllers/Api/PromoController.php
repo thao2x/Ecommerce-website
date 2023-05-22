@@ -9,11 +9,11 @@ class PromoController extends Controller
 {
     public function index()
     {
-        $data = Promo::all();
+        $promos = Promo::all();
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $promos
         ], 200);
     }
 }

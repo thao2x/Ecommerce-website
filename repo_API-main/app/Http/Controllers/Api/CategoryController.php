@@ -9,39 +9,23 @@ use App\Models\Product;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return [type]
-     *
-     */
     public function index()
     {
         $categories = Category::all();
 
         return response()->json([
             'status' => true,
-            'message' => "List of product categories",
             'data' => $categories
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * Search products by product category
-     *
-     * @param Category $category
-     *
-     * @return [type]
-     *
-     */
-    public function search(Category $category)
+    public function search(string $category_id)
     {
-        $products = Product::with('images', 'variants', 'categories')->where('category_id', $category->id)->get();
+        $products = Product::with('images', 'variants', 'categories')->where('category_id', $category_id)->get();
 
         return response()->json([
             'success' => true,
-            'message' => "List of products by product category",
             'data' => $products
-        ], Response::HTTP_OK);
+        ], 200);
     }
 }

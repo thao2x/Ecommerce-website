@@ -1,19 +1,19 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.5:8000/api";
+const BASE_URL = "http://localhost/api";
 const CUSTOMER_URL = "/customer";
-const CATEGORIES_URL = "/category";
+const CATEGORIES_URL = "/categories";
 const PROMO_URL = "/promos";
-const POPULAR_URL = "/popular";
+const POPULAR_URL = "/populars";
 const SEARCH_URL = "/search";
-const SEARCH_PRODUCT_BY_CATEGORY_URL = "/category/";
-const SEARCH_POPULAR_BY_ID_URL = "/popular/";
-const PRODUCT_BY_ID_URL = "/product/";
+const SEARCH_PRODUCT_BY_CATEGORY_URL = "/categories/";
+const SEARCH_POPULAR_BY_ID_URL = "/populars/";
+const PRODUCT_BY_ID_URL = "/products/";
 const LOGIN_URL = "/login";
 const CART_URL = "/cart";
 const CART_UPDATE_URL = "/cart/";
 const ADDRESS_URL = "/address";
-const SHIPPING_URL = "/shippings";
+const SHIPPING_URL = "/shipping";
 const REGISTER_URL = "/register";
 const CREATE_ORDER = "/order";
 

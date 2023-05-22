@@ -6,19 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\OrderItem;
 use App\Models\CartItem;
 
 class OrderController extends Controller
 {
-    /**
-     * Get the order list
-     *
-     * @return [type]
-     *
-     */
     public function index()
     {
         $customer = Auth::guard('api-customer')->user();
@@ -26,46 +21,29 @@ class OrderController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => "Order list",
             'data' => $orders
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * Get order details
-     *
-     * @param string $orderId
-     *
-     * @return [type]
-     *
-     */
     public function show(string $orderId)
     {
         $order = Order::with('order_items.variant.product.images')->find($orderId);
 
         if (is_null($order)) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => "This order is not available",
                 'data' => []
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         return response()->json([
             'success' => true,
             'message' => "Order details",
             'data' => $order
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * [Description for store]
-     *
-     * @param Request $request
-     *
-     * @return [type]
-     *
-     */
     public function store(Request $request)
     {
         // Lấy thông tin user đang đăng nhập
@@ -96,6 +74,18 @@ class OrderController extends Controller
 
         // Xóa dánh sách sản phẩm trong giỏ hàng
         CartItem::where('customer_id', $customer->id)->delete();
+        
+        // Gửi mail cho chủ shop
+        $user = User::first();
+        Mail::send(
+            'mail.new-order',
+            array(
+                'code' => $code,
+            ),
+            function ($message) use ($request) {
+                $message->to($user->email, 'POJO')->subject('Đơn hàng mới từ Shop POJO');
+            }
+        );
 
         // Lấy danh sách order sau khi thêm mới order
         $data = Order::with('order_items.variant.product.images')->where('customer_id', $customer->id)->get();
@@ -103,6 +93,6 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'data' => $data
-        ], Response::HTTP_OK);
+        ], 200);
     }
 }

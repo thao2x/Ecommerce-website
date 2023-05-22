@@ -10,11 +10,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $data = Product::with('images', 'variants')->get();
+        $products = Product::with('images', 'variants')->get();
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $products
         ], 200);
     }
 
@@ -30,7 +30,7 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $data = Product::with('images', 'variants')->where(function ($query) use ($request) {
+        $products = Product::with('images', 'variants')->where(function ($query) use ($request) {
             if ($request->has('query')) {
                 $query->where('name', 'LIKE', '%' . $request['query'] . '%');
             }
@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $products
         ], 200);
     }
 }

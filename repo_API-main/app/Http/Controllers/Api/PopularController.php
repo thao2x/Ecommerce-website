@@ -9,21 +9,20 @@ class PopularController extends Controller
 {
     public function index()
     {
-        $data = Product::with('images', 'variants')->where('rating', '5')->get();
-
+        $populars = Product::with('images', 'variants')->where('rating', '5')->get();
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $populars
         ], 200);
     }
 
     public function show(string $categoryId)
     {
-        $data = Product::with('images', 'variants')->where('category_id', $categoryId)->where('rating', '5')->get();
+        $popular = Product::with('images', 'variants')->where('category_id', $categoryId)->where('rating', '5')->get();
 
         return response()->json([
             'success' => true,
-            'data' => $data
+            'data' => $popular
         ], 200);
     }
 }

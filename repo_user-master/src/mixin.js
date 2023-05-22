@@ -17,6 +17,10 @@ export const mixin = {
                     Promise.reject(error)
                 }
             });
+        },
+
+        getCurrentImage: function (url) {
+            return "http://localhost/storage" + url;
         }
     }
 }

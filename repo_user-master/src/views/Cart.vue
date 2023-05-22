@@ -19,7 +19,7 @@
                 <template v-for="(item, index) in items">
                     <div class="cart" :key="index">
                         <div class="cart__img" @click="goToPageById('product', item.variant.product.id)">
-                            <img :src="item.variant.product.images[0]?.src" />
+                            <img :src="getCurrentImage(item.variant.product.images[0]?.src)" />
                         </div>
                         <div class="cart__info">
                             <div class="cart__info--title">

@@ -8,19 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Symfony\Component\HttpFoundation\Response;
 use App\Models\Customer;
 
 class AuthController extends Controller
 {
-    /**
-     * [Description for login]
-     *
-     * @param Request $request
-     *
-     * @return [type]
-     *
-     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -41,7 +32,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized',
                 'data' => []
-            ], Response::HTTP_UNAUTHORIZED);
+            ], 401);
         }
 
         $user = Auth::guard('customer')->user();
@@ -51,17 +42,9 @@ class AuthController extends Controller
             'success' => true,
             'token' => $token,
             'data' => $user
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * [Description for register]
-     *
-     * @param Request $request
-     *
-     * @return [type]
-     *
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -81,7 +64,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Data check error.',
                 'data' => $validator->errors()
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         $password = Hash::make($request['password']);
@@ -115,15 +98,9 @@ class AuthController extends Controller
             'success' => true,
             'token' => $token,
             'data' => $customer
-        ], Response::HTTP_OK);
+        ], 200);
     }
 
-    /**
-     * [Description for logout]
-     *
-     * @return [type]
-     *
-     */
     public function logout()
     {
         $accessToken = Auth::guard('api-customer')->user()->token();
@@ -132,6 +109,6 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'You have exited the application and the token has been removed'
-        ], Response::HTTP_OK);
+        ], 200);
     }
 }
