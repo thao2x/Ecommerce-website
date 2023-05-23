@@ -8,11 +8,12 @@ use App\Models\Customer;
 
 class CustomerController extends Controller
 {
-    public function index(Request $request) {
-        $customers = Customer::where(function($query) use ($request) {
+    public function index(Request $request)
+    {
+        $customers = Customer::where(function ($query) use ($request) {
             if ($request->has('query')) {
-                $query->where('nick_name', 'LIKE', '%'.$request['query'].'%')
-                            ->orWhere('email', 'LIKE', '%'.$request['query'].'%');
+                $query->where('nick_name', 'LIKE', '%' . $request['query'] . '%')
+                            ->orWhere('email', 'LIKE', '%' . $request['query'] . '%');
             }
         })->orderBy('created_at', 'DESC')->paginate(10);
 
@@ -22,7 +23,8 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function show(string $customerId) {
+    public function show(string $customerId)
+    {
         $customer = Customer::findOrFail($customerId);
 
         return view('admin.customer-detail', [

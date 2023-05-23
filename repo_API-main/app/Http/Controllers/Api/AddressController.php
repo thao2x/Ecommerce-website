@@ -21,7 +21,7 @@ class AddressController extends Controller
             'data' => $address
         ], 200);
     }
-    
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -47,13 +47,11 @@ class AddressController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, ShippingAddress $address)
+    public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => ['required'],
             'name' => ['required'],
-            'details' => ['required'],
-            'default_flg' => ['required']
+            'details' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -64,6 +62,7 @@ class AddressController extends Controller
             ], 200);
         }
 
+        $address = ShippingAddress::findOrFail($id);
         $address->update([
             'name' => $request['name'],
             'details' => $request['details'],

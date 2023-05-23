@@ -8,7 +8,8 @@ use App\Models\Order;
 
 class HomeController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $total = Order::count();
         $total_no_process = Order::where('status', 1)->count();
         $total_processed = Order::where('status', 2)->count();

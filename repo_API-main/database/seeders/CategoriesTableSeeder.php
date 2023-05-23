@@ -16,32 +16,32 @@ class CategoriesTableSeeder extends Seeder
 
         Category::create([
             'name' => 'Nike',
-            'image' => '/categories/nike_logo.png'
+            'image' => '/images/categories/nike_logo.png'
         ]);
 
         Category::create([
             'name' => 'Puma',
-            'image' => '/categories/puma_logo.png'
+            'image' => '/images/categories/puma_logo.png'
         ]);
 
         Category::create([
             'name' => 'Addidas',
-            'image' => '/categories/addidas_logo.png'
+            'image' => '/images/categories/addidas_logo.png'
         ]);
 
         Category::create([
             'name' => 'New Balance',
-            'image' => '/categories/new_balance_logo.png'
+            'image' => '/images/categories/new_balance_logo.png'
         ]);
 
         Category::create([
             'name' => 'Reebok',
-            'image' => '/categories/reebok_logo.png'
+            'image' => '/images/categories/reebok_logo.png'
         ]);
 
         Category::create([
             'name' => 'Converse',
-            'image' => '/categories/converse_logo.webp'
+            'image' => '/images/categories/converse_logo.webp'
         ]);
     }
 }

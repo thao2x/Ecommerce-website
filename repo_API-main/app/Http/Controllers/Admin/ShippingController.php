@@ -70,7 +70,7 @@ class ShippingController extends Controller
                 'success' => false,
                 'errors' => $validator->messages()
             ], 200);
-        }        
+        }
 
         Shipping::findOrFail($shippingId)->update([
             'name' => $request['name'],

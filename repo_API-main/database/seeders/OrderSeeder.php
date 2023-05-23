@@ -19,13 +19,13 @@ class OrderSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $customers = Customer::all();
 
-        foreach($customers as $customer) {
+        foreach ($customers as $customer) {
             for ($i = 0; $i < $faker->randomElement([1, 2, 3, 4]); $i++) {
                 $shipping = Shipping::all()->random()->getAttributes();
                 $promo = Promo::all()->random()->getAttributes();
                 $addressId = '';
 
-                foreach($customer->shippingAddress as $address) {
+                foreach ($customer->shippingAddress as $address) {
                     if ($address->default_flg == 1) {
                         $addressId = $address->id;
                     }

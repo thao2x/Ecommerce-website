@@ -15,14 +15,14 @@ class UsersTableSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
 
-        // Let's make sure everyone has the same password and 
-        // let's hash it before the loop, or else our seeder 
+        // Let's make sure everyone has the same password and
+        // Let's hash it before the loop, or else our seeder
         // will be too slow.
         $password = Hash::make('password');
 
         User::create([
             'full_name' => 'Administrator',
-            'dob' => '09/21/22',
+            'dob' => '09/21/2000',
             'email' => 'admin@test.com',
             'password' => $password,
             'avatar' => '\images\user\avatar.jpg'

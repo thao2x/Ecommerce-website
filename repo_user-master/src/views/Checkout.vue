@@ -38,7 +38,7 @@
                         <template v-for="(item, index) in items">
                             <div class="cart" :key="index">
                                 <div class="cart__img">
-                                    <img :src="item?.variant?.product?.images[0]?.src" />
+                                    <img :src="getCurrentImage(item?.variant?.product?.images[0]?.src)" />
                                 </div>
                                 <div class="cart__info">
                                     <div class="cart__info--title">
@@ -107,8 +107,8 @@
 
             <!-- Footer -->
             <div class="footer">
-                <button @click="complete()" >
-                    <font-awesome-icon :icon="['fas', 'gift']"/>
+                <button @click="complete()">
+                    <font-awesome-icon :icon="['fas', 'gift']" />
                     Order</button>
             </div>
         </template>
@@ -136,8 +136,8 @@
                 <p>Order Successfull!</p>
                 <span>You have successfully made order.</span>
                 <button @click="nextPage()" :class="{ loadingButton: isActive }">
-                    <LoadingButton  v-if="isActive == false"/>
-                    OK  
+                    <LoadingButton v-if="isActive == false" />
+                    OK
                 </button>
             </div>
         </div>
@@ -150,7 +150,7 @@ import Loading from '@/components/Loading'
 import BackButton from '@/components/BackButton'
 import LoadingButton from '@/components/LoadingButton.vue'
 
-import { addAddress, getPromos, getShippings, addOrder } from "@/api";
+import { updateAddress, getPromos, getShippings, addOrder } from "@/api";
 
 export default {
     mixins: [mixin],
@@ -249,7 +249,7 @@ export default {
                 details: this.address.details
             }
             // Update quantity của item trong giỏ hàng
-            addAddress(data).then((response) => {
+            updateAddress(data, this.address.id).then((response) => {
                 if (response.data.success) {
                     // Lưu data cart mới vào state vuex store
                     this.$store.commit('changeAddress', response.data.data);
@@ -274,8 +274,8 @@ export default {
             // Update quantity của item trong giỏ hàng
             addOrder(data).then((response) => {
                 if (response.data.success) {
-                    // Lưu data cart mới vào state vuex store
-                    this.$store.commit('changeAddress', response.data.data);
+                    // Xóa sản phẩm tron giỏ hàng
+                    this.$store.commit('changeCartItems', []);
                 }
             }).catch(() => {
             }).finally(() => {
@@ -284,8 +284,8 @@ export default {
         },
 
         nextPage() {
-			this.goToPage('order');
-		}
+            this.goToPage('order');
+        }
     }
 }
 </script>
@@ -777,7 +777,6 @@ export default {
     width: 80%;
     height: 50%;
     margin: auto;
-    a-webkit-animation-name: example;
     -webkit-animation-duration: 1s;
     animation-name: example;
     animation-duration: 0.5s;
@@ -821,9 +820,9 @@ export default {
             outline: 2px solid #000;
         }
     }
-    
+
     .loadingButton {
-            background-color: #000;
-        }
+        background-color: #000;
+    }
 }
 </style>

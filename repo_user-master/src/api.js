@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost/api";
+const BASE_URL = "http://192.168.1.7/api";
 const CUSTOMER_URL = "/customer";
 const CATEGORIES_URL = "/categories";
 const PROMO_URL = "/promos";
@@ -13,9 +13,10 @@ const LOGIN_URL = "/login";
 const CART_URL = "/cart";
 const CART_UPDATE_URL = "/cart/";
 const ADDRESS_URL = "/address";
+const UPDATE_ADDRESS_URL = "/address/";
 const SHIPPING_URL = "/shipping";
 const REGISTER_URL = "/register";
-const CREATE_ORDER = "/order";
+const CREATE_ORDER = "/orders";
 
 let instance = axios.create({
     baseURL: BASE_URL,
@@ -123,8 +124,8 @@ export const getAddress = () => {
     });
 };
 
-export const addAddress = (data) => {
-    return instance.post(ADDRESS_URL, data, {
+export const updateAddress = (data, id) => {
+    return instance.post(UPDATE_ADDRESS_URL + id, data, {
         headers: authHeader()
     });
 };

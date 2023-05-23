@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="header">
             <div class="header__intro">
-                <div class="header__intro--img">
+                <div class="header__intro--img" @click="goToPage('profile')">
                     <template v-if="user?.avatar">
                         <img :src="getCurrentImage(user?.avatar)" />
                     </template>
@@ -11,7 +11,7 @@
                         <img :src="avatar" />
                     </template>
                 </div>
-                <div class="header__intro--text">
+                <div class="header__intro--text" @click="goToPage('profile')">
                     <p>{{ greet }}<font-awesome-icon icon="fa-solid fa-hand-peace" /></p>
                     <span>{{ user?.nick_name }}</span>
                 </div>

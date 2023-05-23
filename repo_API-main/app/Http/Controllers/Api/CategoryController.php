@@ -19,9 +19,9 @@ class CategoryController extends Controller
         ], 200);
     }
 
-    public function search(string $category_id)
+    public function search(string $categoryId)
     {
-        $products = Product::with('images', 'variants', 'categories')->where('category_id', $category_id)->get();
+        $products = Product::with('images', 'variants', 'categories')->where('category_id', $categoryId)->get();
 
         return response()->json([
             'success' => true,

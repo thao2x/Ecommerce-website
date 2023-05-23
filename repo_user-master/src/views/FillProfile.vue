@@ -7,7 +7,7 @@
             <BackButton :value="'Fill Your Profile'"></BackButton>
         </div>
         <div class="profile-pic">
-            <img :src="!srcImg ? user?.avatar : srcImg" id="photo" />
+            <img :src="getCurrentImage(!srcImg ? user?.avatar : srcImg)" id="photo" />
             <input type="file" id="file" @change="changeImg($event)" />
             <label for="file" id="uploadBtn">Choose Photo</label>
         </div>

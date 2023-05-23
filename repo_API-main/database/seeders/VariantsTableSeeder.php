@@ -15,8 +15,8 @@ class VariantsTableSeeder extends Seeder
     {
         $faker = \Faker\Factory::create();
         $products = Product::all();
-        
-        foreach($products as $product) {
+
+        foreach ($products as $product) {
             for ($i = 0; $i < $faker->randomElement([4, 5]); $i++) {
                 $size = 40 + $i;
                 Variant::create([

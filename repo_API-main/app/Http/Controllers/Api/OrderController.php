@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\User;
@@ -17,7 +16,7 @@ class OrderController extends Controller
     public function index()
     {
         $customer = Auth::guard('api-customer')->user();
-        $orders = Order::with('order_items.variant.product.images')->where('customer_id', $customer->id)->get();
+        $orders = Order::with('orderItems.variant.product.images')->where('customer_id', $customer->id)->get();
 
         return response()->json([
             'status' => true,
@@ -27,7 +26,7 @@ class OrderController extends Controller
 
     public function show(string $orderId)
     {
-        $order = Order::with('order_items.variant.product.images')->find($orderId);
+        $order = Order::with('orderItems.variant.product.images')->find($orderId);
 
         if (is_null($order)) {
             return response()->json([
@@ -74,7 +73,7 @@ class OrderController extends Controller
 
         // Xóa dánh sách sản phẩm trong giỏ hàng
         CartItem::where('customer_id', $customer->id)->delete();
-        
+
         // Gửi mail cho chủ shop
         $user = User::first();
         Mail::send(
@@ -82,13 +81,13 @@ class OrderController extends Controller
             array(
                 'code' => $code,
             ),
-            function ($message) use ($request) {
+            function ($message) use ($user) {
                 $message->to($user->email, 'POJO')->subject('Đơn hàng mới từ Shop POJO');
             }
         );
 
         // Lấy danh sách order sau khi thêm mới order
-        $data = Order::with('order_items.variant.product.images')->where('customer_id', $customer->id)->get();
+        $data = Order::with('orderItems.variant.product.images')->where('customer_id', $customer->id)->get();
 
         return response()->json([
             'success' => true,

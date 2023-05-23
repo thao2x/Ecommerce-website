@@ -83,7 +83,7 @@ export default {
                     Promise.all([getCart(), getAddress()])
                         .then((result) => {
                             this.$store.commit('changeCartItems', result[0].data.data);
-                            this.$store.commit('changeAddress', result[1].data.data);
+                            this.$store.commit('changeAddress', result[1].data.data[0]);
                         })
                         .catch((error) => {
                             console.log(error);

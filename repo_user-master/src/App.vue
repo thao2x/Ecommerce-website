@@ -49,7 +49,7 @@ export default {
           // Lưu vào User vào store
           self.$store.commit('changeUser', result[3].value.data.data);
           self.$store.commit('changeCartItems', result[4].value.data.data);
-          self.$store.commit('changeAddress', result[5].value.data.data);
+          self.$store.commit('changeAddress', result[5].value.data.data[0]);
         })
         .catch((error) => {
           // console.log(error);

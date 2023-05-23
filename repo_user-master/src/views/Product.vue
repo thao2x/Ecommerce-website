@@ -1,7 +1,7 @@
 <template>
     <div class="product--detail">
         <Loading v-if="loading" />
-        <template v-else>
+        <template>
             <div class="back">
                 <BackButton></BackButton>
             </div>

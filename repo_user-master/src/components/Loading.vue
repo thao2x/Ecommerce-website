@@ -19,7 +19,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #343232a3;
+    background-color: #34323280;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,7 +30,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #34323280;
     display: flex;
     justify-content: center;
     align-items: center;

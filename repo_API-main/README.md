@@ -1,2 +1,2 @@
-php artisan migrate:refresh --seed
-php artisan passport:install --uuids
+php artisan migrate --seed
+php artisan passport:install

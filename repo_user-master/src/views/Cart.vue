@@ -5,7 +5,7 @@
             <Loading />
         </template>
 
-        <template v-else>
+        <template>
             <!-- Header -->
             <div class="header">
                 <div class="header__title">
@@ -49,7 +49,7 @@
                     <span>${{ total.toLocaleString("en-IN") }} </span>
                 </div>
                 <div class="total__btn">
-                    <button @click="goToPage('checkout')" :class="{ 'disabled': items.length == 0 }">
+                    <button @click="items.length ? goToPage('checkout') : null" :class="{ 'disabled': items.length == 0 }">
                         Checkout
                         <font-awesome-icon icon="fa-regular fa-hand-point-right" />
                     </button>
@@ -67,7 +67,7 @@
                     <div class="delete__content--card">
                         <div class="item">
                             <div class="item__img">
-                                <img :src="itemDelete?.variant.product.images[0]?.src" />
+                                <img :src="getCurrentImage(itemDelete?.variant.product.images[0]?.src)" />
                             </div>
                             <div class="item__info">
                                 <div class="item__info--title">

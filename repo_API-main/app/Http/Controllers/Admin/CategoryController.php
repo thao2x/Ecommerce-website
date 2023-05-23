@@ -77,14 +77,13 @@ class CategoryController extends Controller
                 'success' => false,
                 'errors' => $validator->messages()
             ], 200);
-        }        
+        }
 
         $category = Category::findOrFail($categoryId);
         $directory = $category->image;
 
         // Trường hợp có chỉnh sửa hình ảnh
         if ($request->hasFile('image')) {
-
             // Lưu hình mới vào minio storage
             $file = $request->file('image');
             $name = time() . $file->getClientOriginalName();

@@ -36,7 +36,6 @@ class UserController extends Controller
 
         // Trường hợp có chỉnh sửa hình ảnh
         if ($request->hasFile('avatar')) {
-
             // Lưu hình mới vào minio storage
             $file = $request->file('avatar');
             $name = time() . $file->getClientOriginalName();
@@ -56,7 +55,6 @@ class UserController extends Controller
                 'password' => $password,
                 'avatar' => $directory
             ]);
-
         } else {
             // Trường hợp không chỉnh sửa hình ảnh
             $user->update([

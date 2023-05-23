@@ -87,6 +87,5 @@ class CustomerTableSeeder extends Seeder
             'avatar' => '\images\customers\customer_6.jpg',
             'pin' => '1111'
         ]);
-
     }
 }

@@ -24,7 +24,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Data check error.',
                 'data' => $validator->errors()
-            ], Response::HTTP_OK);
+            ], 200);
         }
 
         if (!Auth::guard('customer')->attempt(["email" => $request['email'], "password" => $request['password']])) {

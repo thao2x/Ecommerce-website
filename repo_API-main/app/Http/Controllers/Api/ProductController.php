@@ -31,9 +31,7 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $products = Product::with('images', 'variants')->where(function ($query) use ($request) {
-            if ($request->has('query')) {
-                $query->where('name', 'LIKE', '%' . $request['query'] . '%');
-            }
+            $query->where('name', 'LIKE', '%' . $request['query'] . '%');
         })->get();
 
         return response()->json([

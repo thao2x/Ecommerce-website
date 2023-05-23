@@ -87,7 +87,7 @@ class PromoController extends Controller
                 'success' => false,
                 'errors' => $validator->messages()
             ], 200);
-        }        
+        }
 
         Promo::findOrFail($promoId)->update([
             'name' => $request['name'],

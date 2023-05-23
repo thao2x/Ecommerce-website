@@ -20,7 +20,7 @@ class CustomerController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
@@ -40,6 +40,7 @@ class CustomerController extends Controller
             ], 200);
         }
 
+        $customer = Auth::guard('api-customer')->user();
         $customer->update([
             'full_name' => $request['full_name'],
             'nick_name' => $request['nick_name'],

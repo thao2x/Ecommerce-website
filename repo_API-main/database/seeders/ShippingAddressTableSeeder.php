@@ -17,7 +17,7 @@ class ShippingAddressTableSeeder extends Seeder
 
         $customers = Customer::all();
 
-        foreach($customers as $customer) {
+        foreach ($customers as $customer) {
             ShippingAddress::create([
                 'id' => $faker->uuid,
                 'customer_id' => $customer->id,
