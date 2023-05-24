@@ -63,24 +63,29 @@ export default {
   
 <style lang="scss" scoped>
 .offers {
+    display: flex;
+    flex-direction: column;
+    letter-spacing: normal;
+    font-family: system-ui;
+    height: 100vh;
+
     .back {
         height: 60px;
         display: flex;
         align-items: center;
-        padding-left: 20px;
-        position: fixed;
         top: 0;
         background-color: #fff;
-        width: 100%;
+        z-index: 1;
+        padding: 0 5%;
     }
 
     .content {
-        padding-top: 65px;
-        width: 90%;
-        margin: auto;
         letter-spacing: normal;
         font-family: system-ui;
+        padding: 0 5%;
+        height: calc(100% - 60px);
         overflow: auto;
+        padding-top: 5px;
     }
 
     .banner {

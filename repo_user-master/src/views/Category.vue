@@ -63,20 +63,18 @@ export default {
 .category {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    margin: auto;
     letter-spacing: normal;
     font-family: system-ui;
+    height: 100vh;
 
     .back {
         height: 60px;
         display: flex;
         align-items: center;
-        position: fixed;
         top: 0;
         background-color: #fff;
-        width: 100%;
         z-index: 1;
+        padding: 0 5%;
     }
 
     .product {
@@ -84,7 +82,10 @@ export default {
         flex-wrap: wrap;
         gap: 5%;
         justify-content: space-between;
-        margin-top: 65px;
+        padding: 0 5%;
+        height: calc(100% - 60px);
+        overflow: auto;
+        padding-top: 5px;
 
         &__cart {
             width: 47.5%;

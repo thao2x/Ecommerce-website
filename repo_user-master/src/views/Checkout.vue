@@ -21,8 +21,8 @@
                             <font-awesome-icon icon="fa-solid fa-location-dot" />
                         </div>
                         <div class="location__address--text">
-                            <p>{{ address?.name }}</p>
-                            <span>{{ address?.details }}</span>
+                            <p>{{ addressStore?.name }}</p>
+                            <span>{{ addressStore?.details }}</span>
                         </div>
                         <div class="location__address--edit">
                             <font-awesome-icon icon="fa-solid fa-pen" @click="showEditAddress = !showEditAddress" />
@@ -124,23 +124,23 @@
                 <input placeholder="Detail" type="text" v-model="address.details" />
             </div>
             <div class="edit--btn">
-                <button class="btn--cancel" @click="showEditAddress = !showEditAddress">Cancel</button>
+                <button class="btn--cancel" @click="handleCancelUpdateAddress()">Cancel</button>
                 <button class="btn--remove" @click="handleUpdateAddress()">Ok</button>
             </div>
         </div>
 
         <!-- Popup order success -->
-        <div class="cnt" id="qr1" v-if="success">
+        <div class="cnt" v-if="showPopupSuccess">
             <div class="ctn_content">
-                <img src="@/assets/orderSuccess.png" alt="" />
+                <img src="@/assets/orderSuccess.png" />
                 <p>Order Successfull!</p>
                 <span>You have successfully made order.</span>
-                <button @click="nextPage()" :class="{ loadingButton: isActive }">
-                    <LoadingButton v-if="isActive == false" />
-                    OK
-                </button>
+                <button @click="goToPage('order')" class="isActive">OK</button>
             </div>
         </div>
+
+        <!-- Loading when create order -->
+        <Loading v-if="loadingCreateOrder"/>
     </div>
 </template>
   
@@ -158,13 +158,17 @@ export default {
     data() {
         return {
             showEditAddress: false,
-            success: false,
-            isActive: false,
+            showPopupSuccess: false,
+            loadingCreateOrder: false,
             promos: [],
             shippings: [],
             loading: false,
             promo: null,
-            shipping: null
+            shipping: null,
+            address: {
+                name: null,
+                details: null
+            }
         }
     },
 
@@ -175,6 +179,7 @@ export default {
     },
 
     created() {
+        this.address = { ...this.address, ...this.$store.state.address };
         this.init();
     },
 
@@ -183,7 +188,7 @@ export default {
             return this.$store.state.cartItems;
         },
 
-        address() {
+        addressStore() {
             return this.$store.state.address;
         },
 
@@ -224,7 +229,7 @@ export default {
             const self = this;
 
             // Hiện loading
-            self.loading = false;
+            self.loading = true;
 
             Promise.all([getPromos(), getShippings()])
                 .then((result) => {
@@ -241,13 +246,20 @@ export default {
                 });
         },
 
+        handleCancelUpdateAddress: function () {
+            this.address = { ...this.address, ...this.$store.state.address };
+            this.showEditAddress = !this.showEditAddress;
+        },
+
         handleUpdateAddress: function () {
             // Hiện loading
             this.loading = true;
+
             let data = {
                 name: this.address.name,
                 details: this.address.details
             }
+
             // Update quantity của item trong giỏ hàng
             updateAddress(data, this.address.id).then((response) => {
                 if (response.data.success) {
@@ -263,28 +275,30 @@ export default {
         },
 
         complete() {
-            // Hiện popup
-            this.success = true;
+            // Hiện loading
+            this.loadingCreateOrder = true;
+
             let data = {
                 shiping_address_id: this.address.id,
                 shipping_id: this.shipping,
                 promo_id: this.promo,
                 variants: this.items
             }
+
             // Update quantity của item trong giỏ hàng
             addOrder(data).then((response) => {
                 if (response.data.success) {
-                    // Xóa sản phẩm tron giỏ hàng
+                    // Xóa sản phẩm trong giỏ hàng
                     this.$store.commit('changeCartItems', []);
+
+                    // Hiển thị dialog success
+                    this.showPopupSuccess = true;
                 }
             }).catch(() => {
             }).finally(() => {
-                this.isActive = true;
+                // Ẩn loading
+                this.loadingCreateOrder = false;
             })
-        },
-
-        nextPage() {
-            this.goToPage('order');
         }
     }
 }

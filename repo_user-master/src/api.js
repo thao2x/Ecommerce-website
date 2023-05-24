@@ -112,9 +112,9 @@ export const getUser = () => {
     });
 };
 
-export const updateUser = (data) => {
+export const updateUser = (data) => {    
     return instance.post(CUSTOMER_URL, data, {
-        headers: authHeader()
+        headers: { ...authHeader(), 'Content-Type': 'multipart/form-data' }
     });
 };
 

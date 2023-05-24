@@ -17,6 +17,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'required' => 'The :attribute field is required.',
         ]);
 
         if ($validator->fails()) {

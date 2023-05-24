@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/order/{orderId}', [OrderController::class, 'show'])->name('admin.order.show');
     Route::post('/order/{orderId}', [OrderController::class, 'update'])->name('admin.order.update');
     Route::delete('/order/{orderId}', [OrderController::class, 'destroy'])->name('admin.order.destroy');
-
+    
     // Product routes
     Route::get('/product', [ProductController::class, 'index'])->name('admin.product.index');
     Route::get('/product/new-product', [ProductController::class, 'store'])->name('admin.product.store');

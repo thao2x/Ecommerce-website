@@ -37,25 +37,22 @@ export default {
 <style lang="scss" scoped>
 .notification {
     background-color: rgba(204, 204, 204, 0.2705882353);
+    height: calc(100vh - 70px);
 
     .back {
         height: 60px;
         display: flex;
         align-items: center;
-        padding-left: 20px;
-        position: fixed;
         top: 0;
-        background-color: #f1f1f1;
-        width: 100%;
+        background-color: #fff;
+        z-index: 1;
+        padding: 0 5%;
     }
 
     .content {
-        width: 90%;
-        margin: auto;
-        letter-spacing: normal;
-        font-family: system-ui;
+        padding: 10px 15px;
+        height: calc(100% - 80px);
         overflow: auto;
-        padding-top: 65px;
 
         .ctn {
             display: flex;

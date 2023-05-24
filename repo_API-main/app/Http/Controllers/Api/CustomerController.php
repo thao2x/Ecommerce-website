@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Customer;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
@@ -40,6 +40,14 @@ class CustomerController extends Controller
             ], 200);
         }
 
+        $directory = $request['avatar'];
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/customers/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+        }
+
         $customer = Auth::guard('api-customer')->user();
         $customer->update([
             'full_name' => $request['full_name'],
@@ -49,7 +57,7 @@ class CustomerController extends Controller
             'password' => $request['password'],
             'phone' => $request['phone'],
             'gender' => $request['gender'],
-            'avatar' => $request['avatar'],
+            'avatar' => $directory,
             'pin' => $request['pin']
         ]);
 
