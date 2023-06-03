@@ -7,123 +7,85 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Yajra\Datatables\Datatables;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
+        return view('admin.category');
+    }
 
-        return view('admin.category', [
-            'categories' => $categories
-        ]);
+    public function data()
+    {
+        $categories = Category::with('products')->where('del_flg', 0)->orderBy('created_at', 'DESC')->get();
+
+        return Datatables::of($categories)->make();
+    }
+
+    public function create()
+    {
+        return view('admin.category-create');
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required'
-        ]);
+        $directory = "";
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
-        }
-
-        $directory = '';
+        // Add Category Image
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $name = time() . $file->getClientOriginalName();
-            $directory = 'categories/' . $name;
-            Storage::disk('minio')->put($directory, file_get_contents($file));
+            $directory = '/images/categories/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
         }
 
+        // Add Category
         Category::create([
             'name' => $request['name'],
-            'description' => $request['description'],
-            'image' => $directory
+            'image' => $directory,
+            'description' => $request['description']
         ]);
 
-        $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $categories
-        ], 200);
+        return redirect()->route('admin.category.index');
     }
 
     public function show(string $categoryId)
     {
-        $category = Category::with('products')->findOrFail($categoryId);
+        $category = Category::findOrFail($categoryId);
 
-        return response()->json([
-            'success' => true,
-            'data' => $category
-        ], 200);
+        return view('admin.category-detail', [
+            'category' => $category
+        ]);
     }
 
     public function update(Request $request, string $categoryId)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
-        }
-
-        $category = Category::findOrFail($categoryId);
+        // Add Category
+        $category = Category::find($categoryId);
         $directory = $category->image;
 
-        // Trường hợp có chỉnh sửa hình ảnh
+        // Add Category Image
         if ($request->hasFile('image')) {
-            // Lưu hình mới vào minio storage
             $file = $request->file('image');
             $name = time() . $file->getClientOriginalName();
-            $directory = 'categories/' . $name;
-            Storage::disk('minio')->put($directory, file_get_contents($file));
-
-            // Xóa hình củ trên minio storage
-            Storage::disk('minio')->delete($category->image);
-
-            // Update
-            $category->update([
-                'name' => $request['name'],
-                'description' => $request['description'],
-                'image' => $directory
-            ]);
-        } else {
-            // Trường hợp không chỉnh sửa hình ảnh
-            $category->update([
-                'name' => $request['name'],
-                'description' => $request['description']
-            ]);
+            $directory = '/images/categories/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
         }
 
-        // Lấy lại danh sách categories mới nhất
-        $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
+        // Add Category
+        $category->update([
+            'name' => $request['name'],
+            'image' => $directory,
+            'description' => $request['description']
+        ]);
 
-        return response()->json([
-            'success' => true,
-            'data' => $categories
-        ], 200);
+        return redirect()->route('admin.category.index');
     }
 
     public function destroy(string $categoryId)
     {
         Category::findOrFail($categoryId)->update(['del_flg' => 1]);
-        $categories = Category::with('products')->orderBy('created_at', 'DESC')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $categories
-        ], 200);
+        return redirect()->route('admin.category.index');
     }
 }

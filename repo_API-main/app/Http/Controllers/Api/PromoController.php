@@ -9,7 +9,7 @@ class PromoController extends Controller
 {
     public function index()
     {
-        $promos = Promo::all();
+        $promos = Promo::where('del_flg', 0)->get();
 
         return response()->json([
             'success' => true,

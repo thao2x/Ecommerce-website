@@ -7,16 +7,16 @@
             </div>
         </div>
         <div class="product__cart--name">
-            <p>{{ product.name }}</p>
+            <p>{{ product?.name }}</p>
         </div>
         <div class="product__cart--star">
             <font-awesome-icon icon="fa-regular fa-star-half-stroke" />
-            <p>{{ product.rating }}</p>
+            <p>{{ product?.rating }}</p>
             <p class="sold">6,937 sold</p>
         </div>
         <div class="product__cart--price">
             <font-awesome-icon icon="fa-solid fa-dollar-sign" />
-            <p>{{ product.price }}</p>
+            <p>{{ (product?.price).toLocaleString("en-IN") }}</p>
         </div>
     </div>
 </template>

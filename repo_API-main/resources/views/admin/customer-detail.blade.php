@@ -1,176 +1,200 @@
 @extends('layout.app')
-@section('title')
-    <div class="pagetitle">
-        <h1>Khách hàng</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active">{{ $customer->nick_name }}</li>
-            </ol>
-        </nav>
-    </div>
-@endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-8">
-            <div class="row">
-                <div class="card mb-0">
-                    <div class="card-body p-0 py-3 px-2 rounded">
-                        <div class="row">
-                            <div class="col-6 d-flex flex-column">
-                                <span>Số tiền đã chi tiêu</span>
-                                <span>
-                                    @php
-                                        $totalAll = 0;
+<div class="m-3 d-flex">
+    <a href="{{ route('admin.customer.index') }}" class="text-secondary"><i class="bi bi-arrow-left"></i></a>
+    <div class="ms-2">
+        <p class="my-2 fs-6 text-secondary">Back to customers</p>
+        <h2 class="my-2 fw-bold title">{{ $customer->full_name }}</h2>
+    </div>
+</div>
+<div class="row m-3">
+    <div class="col-3 ps-0">
+        @php
+            $total = 0;
 
-                                        foreach($customer->orders as $order) {
-                                            $totalOrder = 0;
-                                            foreach($order->orderItems as $item) {
-                                                // Cộng tiền mỗi sản phẩm
-                                                $totalOrder += ($item->variant->product->price * $item->quantity);
-                                            }
+            foreach($customer->orders as $order) {
+                $priceItem = 0;
+                foreach($order->orderItems as $item) {
+                    // Cộng tiền mỗi sản phẩm
+                    $priceItem += ($item->variant->product->price * $item->quantity);
+                }
 
-                                            // Cộng mỗi đơn hàng
-                                            $totalAll += $totalOrder;
+                // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
+                if (isset($order->promo)) {
+                    $priceItem -= ($order->promo->percentage/100 * $priceItem);
+                }
 
-                                            // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
-                                            $totalAll -= ($order->promo->percentage/100 * $totalOrder);
+                // Cộng tiền ship cho mỗi đơn hàng
+                $priceItem += $order->shipping->price;
 
-                                            // Cộng tiền ship cho mỗi đơn hàng
-                                            $totalAll += $order->shipping->price;
-                                        }
-                                    @endphp
+                $total += $priceItem;
+            }
+        @endphp
 
-                                    {{ $totalAll }}<i class="bi bi-currency-dollar"></i>
-                                </span>
-                            </div>
-                            <div class="col-6 d-flex flex-column border-start">
-                                <span>Đơn hàng</span>
-                                <span>{{ $customer->orders->count() }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row pt-3">
-                <div class="card">
-                    <div class="card-body p-0 py-3 px-2 rounded">
-                        <b>Đơn đặt hàng mới nhất</b>
-                        <div class="py-2">
-                            <div class="row">
-                                <div class="col-8 d-flex align-items-center">
-                                    <a class="text-primary" href="{{ route('admin.order.show', $customer->orders->last()->id) }}">#{{$customer->orders->last()->code}}</a>
-                                    @if ($customer->orders->last()->status == 1)
-                                        <span class="badge bg-info px-3 py-2 ms-3">Chưa xử lý</span>
-                                    @elseif ($customer->orders->last()->status == 2)
-                                        <span class="badge bg-success px-3 py-2 ms-3">Đã xử lý</span>
-                                    @else
-                                        <span class="badge bg-danger px-3 py-2 ms-3">Đã hủy</span>
-                                    @endif  
-                                </div>
-                                <div class="col-4 d-flex justify-content-end">
-                                    @php
-                                        $total = 0;
+        <p class="m-0 mb-1 fw-bold">Total Cost</p>
+        <p class="m-0 fs-2 fw-bold">${{ number_format($total) }}</p>
+        <p class="m-0 fs-6 text-secondary">New cost last 365 days</p>
+    </div>
+    <div class="col-3 ps-0">
+        <p class="m-0 mb-1 fw-bold">Total Order</p>
+        <p class="m-0 fs-2 fw-bold d-flex align-items-center">{{$customer->orders->where('status', 0)->count()}}<span class="dot dot--progress"></span></p>
+        <p class="m-0 fs-6 text-secondary">Total Order last 365 days</p>
+    </div>
+    <div class="col-3 ps-0">
+        <p class="m-0 mb-1 fw-bold">Completed</p>
+        <p class="m-0 fs-2 fw-bold d-flex align-items-center">{{$customer->orders->where('status', 1)->count()}}<span class="dot dot--completed"><span></p>
+        <span class="m-0">Completed order last 365 days</span>
+    </div>
+    <div class="col-3 ps-0">
+        <p class="m-0 mb-1 fw-bold">Canceled</p>
+        <p class="m-0 fs-2 fw-bold d-flex align-items-center">{{$customer->orders->where('status', 2)->count()}}<span class="dot dot--canceled"></span></p>
+        <p class="m-0 fs-6 text-secondary">Canceled order last 365 days</p>
+    </div>
+</div>
 
-                                        foreach($customer->orders->last()->orderItems as $item) {
-                                            // Cộng tiền mỗi sản phẩm
-                                            $total += ($item->variant->product->price * $item->quantity);
-                                        }
-                                        
-                                        // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
-                                        $total -= ($customer->orders->last()->promo->percentage/100 * $total);
+<div class="row m-3 mt-5">
+    <div class="col-3 ps-0">
+        <p class="fs-5 fw-bold">Customer Information</p>
 
-                                        // Cộng tiền ship cho mỗi đơn hàng
-                                        $total += $customer->orders->last()->shipping->price;
-
-                                    @endphp
-
-                                    {{ $total }} <i class="bi bi-currency-dollar"></i>
-                                </div>
-                            </div>
-                        </div>
-                        @foreach ($customer->orders->last()->orderItems as $item)
-                            <div class="row pt-4 border-top">
-                                <div class="col-6 d-flex justify-content-start align-items-center">
-                                    <div class="position-relative">
-                                        @if (count($item->variant->product->images) > 0)
-                                            <img class="img-product" src="{{ config('APP_URL') . '/storage' . $item->variant->product->images[0]->src }}">
-                                        @else
-                                            <img class="img-product" src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
-                                        @endif
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {{ $item->quantity }}
-                                        </span>
-                                    </div>
-                                    <span class="ps-3">{{ $item->variant->product->name }}</span>
-                                </div>
-                                <div class="col-3 d-flex justify-content-end align-items-center">
-                                    {{ $item->variant->product->price }} <i class="bi bi-currency-dollar"></i> × {{ $item->quantity }}
-                                </div>
-                                <div class="col-3 d-flex justify-content-end align-items-center">
-                                    {{ $item->quantity * $item->variant->product->price }} <i class="bi bi-currency-dollar"></i>
-                                </div>
-                            </div>
-                        @endforeach
-                        
-                        <div class="d-flex justify-content-end pt-2">
-                            <a href="{{ route('admin.order.index', array('customer_id' => $customer->id)) }}" class="btn btn-outline-primary">Xem tất cả đơn hàng</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card">
-                <ul class="sidebar-nav p-3">
-                    <li class="nav-item">
-                        <a class="nav-link w-content p-2 mb-3">Thông tin liên hệ</a>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">Tên: </b>
-                            <span  class="col-8">{{ $customer->full_name }}</span>
-                        </div>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">Biệt danh: </b>
-                            <span  class="col-8">{{ $customer->nick_name }}</span>
-                        </div>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">Ngày sinh: </b>
-                            <span  class="col-8">{{ $customer->dob }}</span>
-                        </div>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">Giới tính: </b>
-                            <span  class="col-8">{{ $customer->gender }}</span>
-                        </div>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">Email: </b>
-                            <span  class="col-8">{{ $customer->email }}</span>
-                        </div>
-                        <div class="row p-1 m-0">
-                            <b class="col-4">SĐT: </b>
-                            <span  class="col-8">{{ $customer->phone }}</span>
-                        </div>
-                    </li>
-                </ul>
-                <ul class="sidebar-nav p-3">
-                    @foreach ($customer->shippingAddress as $address)
-                        {{-- Chỉ hiển thị địa chỉ mặc định default_flg: 1 --}}
-                        @if ($address->default_flg == 1)
-                            <li class="nav-item">
-                                <a class="nav-link w-content p-2 mb-3">Địa chỉ giao hàng</a>
-                                <div class="row p-1 m-0">
-                                    <b class="col-4">Địa chỉ: </b>
-                                    <span  class="col-8">{{ $address->name }}</span>
-                                </div>
-                                <div class="row p-1 m-0">
-                                    <b class="col-4">Chi tiết: </b>
-                                    <span  class="col-8">{{ $address->details }}</span>
-                                </div>
-                            </li>                            
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
+        <div class="mt-2 ps-4">
+            <p class="m-0 mb-1 fs-6 text-secondary">Name</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->full_name }}</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">Nick name</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->nick_name }}</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">Date of birth</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->dob }}</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">Email</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->email }}</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">Phone</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->phone }}</p>
         </div>
     </div>
+    <div class="col-9 ps-0">
+        <p class="fs-5 fw-bold">Orders</p>
+        <div class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="status" value="" id="all" checked>
+                <label class="form-check-label text-uppercase" for="all">
+                    All Orders
+                </label>
+            </div>
+            <div class="form-check ms-2">
+                <input class="form-check-input" type="radio" name="status" value="0" id="processing">
+                <label class="form-check-label text-uppercase" for="processing">
+                    Processing
+                </label>
+            </div>
+            <div class="form-check ms-2">
+                <input class="form-check-input" type="radio" name="status" value="1" id="completed">
+                <label class="form-check-label text-uppercase" for="completed">
+                    Completed
+                </label>
+            </div>
+            <div class="form-check ms-2">
+                <input class="form-check-input" type="radio" name="status" value="2" id="canceled">
+                <label class="form-check-label text-uppercase" for="canceled">
+                    Canceled
+                </label>
+            </div>
+        </div>
+        <table class="table align-items-center mb-0" id="table">
+            <thead>
+                <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order Date</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Items</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.customer.data-order', $customer->id) }}",
+            autoWidth: false,
+            language: {
+                paginate: {
+                    first:      "<<",
+                    last:       ">>",
+                    next:       ">",
+                    previous:   "<"
+                },
+            },
+            columns: [
+                { 
+                    data: 'code',
+                    width: '20%',
+                    render: function(data, type, row, meta){
+                        let url_detail = "{{ route('admin.order.show', '--code--') }}";
+                        return `<a href="${url_detail.replace("--code--", row.id)}">#${row.code}</a>`;
+                    }
+                },
+                { 
+                    data: 'created_at',
+                    width: '15%',
+                },
+                { 
+                    data: 'customer',
+                    width: '25%',
+                    render: function(data, type, row, meta){
+                        return `<span class="line-two">${row.order_items.reduce((arr, item) => { return [...arr, item.variant.product.name]; }, []).join(", ")}</span>`
+                    }
+                },
+                { 
+                    data: 'order_items',
+                    width: '15%',
+                    render: function(data, type, row, meta){
+                        let total = 0;
+                        let amount = row.order_items.reduce((total, item) => total + (item.variant.product.price * item.quantity), 0);
+                        total += amount;
+                        total += row.shipping.price;
+                        if (row.promo) {
+                            total -= row.promo.percentage / 100 * amount;
+                        }
+                        return `$${total.toLocaleString("en-IN")}`;
+                    }
+                },
+                { 
+                    data: 'status',
+                    width: '15%',
+                    render: function(data, type, row, meta){
+                        if (parseInt(data) == 0) {
+                            return `<span class="badge badge-sm bg-gradient-secondary w-auto">Processing</span>`;
+                        }
+                        if (parseInt(data) == 1) {
+                            return `<span class="badge badge-sm bg-gradient-success w-auto">Completed</span>`;
+                        }
+                        return `<span class="badge badge-sm bg-gradient-cancel w-auto">Canceled</span>`;
+                    }
+                },
+                { 
+                    data: 'order_items',
+                    width: '10%',
+                    render: function(data, type, row, meta){
+                        return `${data.length} items`;
+                    }
+                }
+            ]
+        });
+
+        $('[name="status"]').on('change', function(){
+            let status = $(this).val() ? "^" + $(this).val() + "$" : "";
+            table.column(4).search(status, true, false, true).draw();
+        });
+
+        $('#table_length').hide();
+        $('#table_filter').hide();
+        $('#table_info').hide();
+    });
+</script>
 @endsection

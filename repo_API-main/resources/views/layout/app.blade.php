@@ -10,15 +10,18 @@
     @include('base.sidebar')
 
     <main id="main" class="main">
-
-        @yield('title')
-
-        @yield('content')
-
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                    @yield('content')
+                </div>
+            </div>
+        </div>
     </main>
 
     @include('base.js')
 
+    @yield('script')
 </body>
 
 </html>

@@ -18,7 +18,7 @@ class ShippingTableSeeder extends Seeder
         Shipping::create([
             'name' => 'COD',
             'description' => 'Cash on Delivery (COD)',
-            'price' => 550
+            'price' => '50.5'
         ]);
     }
 }

@@ -12,7 +12,7 @@
                     </template>
                 </div>
                 <div class="header__intro--text" @click="goToPage('profile')">
-                    <p>{{ greet }}<font-awesome-icon icon="fa-solid fa-hand-peace" /></p>
+                    <p>{{ greet }} <font-awesome-icon icon="fa-solid fa-hand-peace" /></p>
                     <span>{{ user?.nick_name }}</span>
                 </div>
             </div>
@@ -200,7 +200,7 @@ export default {
 .home {
     display: flex;
     flex-direction: column;
-    padding-top: 10px;
+    padding-top: 20px;
     width: 90%;
     margin: auto;
     letter-spacing: normal;
@@ -210,24 +210,19 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-        height: 15vh;
+        margin-bottom: 30px;
+        height: 6vh;
 
         &__intro {
             display: flex;
-            width: 80%;
-            justify-content: space-between;
+            justify-content: flex-start;
 
             &--img {
-                width: 40%;
-                margin: 0 auto;
-                display: flex;
-                align-items: center;
 
                 img {
-                    width: 100%;
+                    height: 60px;
+                    width: 60px;
                     border-radius: 50%;
-                    height: 100%;
                     object-fit: cover;
                 }
             }
@@ -236,8 +231,7 @@ export default {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                width: 60%;
-                padding: 0 20px;
+                padding: 0 15px;
 
                 p {
                     font-size: 16px;
@@ -249,9 +243,9 @@ export default {
                 }
 
                 span {
-                    margin-top: 20px;
+                    margin-top: 10px;
                     font-size: 18px;
-                    font-weight: 400;
+                    font-weight: 600;
                 }
             }
         }

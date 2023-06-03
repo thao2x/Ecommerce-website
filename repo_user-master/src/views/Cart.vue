@@ -225,7 +225,6 @@ export default {
         .cart {
             display: flex;
             align-items: center;
-            gap: 10px;
             height: 12vh;
             padding: 15px;
             margin-bottom: 20px;
@@ -259,6 +258,7 @@ export default {
                     p {
                         font-size: 18px;
                         font-weight: 500;
+                        width: 90%;
                     }
 
                     svg {

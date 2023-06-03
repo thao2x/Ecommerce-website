@@ -9,7 +9,7 @@ class ShippingController extends Controller
 {
     public function index()
     {
-        $shippings = Shipping::all();
+        $shippings = Shipping::where('del_flg', 0)->get();
 
         return response()->json([
             'success' => true,

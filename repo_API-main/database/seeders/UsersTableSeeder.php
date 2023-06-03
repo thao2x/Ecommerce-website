@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
 
         User::create([
             'full_name' => 'Administrator',
-            'dob' => '09/21/2000',
+            'dob' => $faker->date(),
             'email' => 'admin@test.com',
             'password' => $password,
             'avatar' => '\images\user\avatar.jpg'

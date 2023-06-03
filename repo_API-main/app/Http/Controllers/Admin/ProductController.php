@@ -5,35 +5,103 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Yajra\Datatables\Datatables;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Variant;
+use App\Models\Image;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $products = Product::where(function ($query) use ($request) {
-            if ($request->has('query')) {
-                $query->where('name', 'LIKE', '%' . $request['query'] . '%');
-            }
-        })->orderBy('created_at', 'DESC')->paginate(10);
+        return view('admin.product');
+    }
 
-        return view('admin.product', [
-            'products' => $products,
-            'query_prev' => $request['query']
+    public function data()
+    {
+        $products = Product::with('images', 'category')->where('del_flg', 0)->get();
+        return Datatables::of($products)->make();
+    }
+
+    public function create()
+    {
+        $categories = Category::all();
+        return view('admin.product-create', [
+            'categories' => $categories
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $user = Auth::user();
+
+        // Add Product
         $product = Product::create([
-            'user_id' => Auth::user()->id,
-            'type' => 1
+            'category_id' => $request['category_id'],
+            'user_id' => $user['id'],
+            'name' => $request['name'],
+            'type' => $request['type'],
+            'price' => $request['price'],
+            'description' => $request['description']
         ]);
 
-        return redirect()->route('admin.product.show', $product->id);
+        // Add Variants
+        if ($request->has('size')) {
+            foreach (explode(",", $request['size']) as $size) {
+                Variant::create([
+                    'product_id' => $product['id'],
+                    'size' => $size,
+                ]);
+            }
+        }
+
+        // Add Product Image
+        if ($request->hasFile('image_a')) {
+            $file = $request->file('image_a');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+        if ($request->hasFile('image_b')) {
+            $file = $request->file('image_b');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+
+        if ($request->hasFile('image_c')) {
+            $file = $request->file('image_c');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+
+        if ($request->hasFile('image_d')) {
+            $file = $request->file('image_d');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+
+        return redirect()->route('admin.product.index');
     }
 
     public function show(string $productId)
@@ -43,30 +111,88 @@ class ProductController extends Controller
 
         return view('admin.product-detail', [
             'product' => $product,
-            'categories' => $categories,
-            'variants' => $product->variants
+            'categories' => $categories
         ]);
     }
 
-    public function update(Request $request, string $productId)
+    public function update(Request $request, string $id)
     {
-        $messages = [
-            'name.required' => 'Tên là bắt buộc.',
-            'price.required' => 'Giá sản phẩm là bắt buộc.'
-        ];
+        // Add Product
+        $product = Product::find($id);
+        $product->update([
+            'category_id' => $request['category_id'],
+            'name' => $request['name'],
+            'type' => $request['type'],
+            'price' => $request['price'],
+            'description' => $request['description']
+        ]);
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'price' => 'required'
-        ], $messages);
+        // Delete Prev Variants
+        Variant::where('product_id', $product['id'])->update(['del_flg' => 1]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+        // Add Variants
+        if ($request->has('size')) {
+            foreach (explode(",", $request['size']) as $size) {
+                Variant::create([
+                    'product_id' => $product['id'],
+                    'size' => $size,
+                ]);
+            }
         }
 
-        Product::findOrFail($productId)->update($request->all());
+        // Add Product Image
+        if ($request->hasFile('image_a')) {
+            $file = $request->file('image_a');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+        if ($request->hasFile('image_b')) {
+            $file = $request->file('image_b');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
 
-        return redirect()->route('admin.product.show', $productId);
+        if ($request->hasFile('image_c')) {
+            $file = $request->file('image_c');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+
+        if ($request->hasFile('image_d')) {
+            $file = $request->file('image_d');
+            $name = time() . $file->getClientOriginalName();
+            $directory = '/images/products/' . $request['name'] . '/' . $name;
+            Storage::disk('public')->put($directory, file_get_contents($file));
+            Image::create([
+                'product_id' => $product['id'],
+                'src' => $directory
+            ]);
+        }
+
+        // Remove Images Prev
+        // dd(!empty($request->input('removeImageIds')));
+        if (!empty($request->input('removeImageIds'))) {
+            foreach (explode(",", $request['removeImageIds']) as $id) {
+                Image::find($id)->delete();
+            }
+        }
+
+        return redirect()->route('admin.product.index');
     }
 
     public function destroy(string $productId)

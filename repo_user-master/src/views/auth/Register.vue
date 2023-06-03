@@ -10,21 +10,27 @@
         <!-- Email -->
         <div class="input-group">
             <font-awesome-icon icon="fa-solid fa-envelope" />
-            <input placeholder="Email" type="text" v-model="email" @focus="errorEmail = null"/>
+            <input placeholder="Email" type="text" v-model="email" @focus="errorEmail = null" required/>
         </div>
         <p class="error" v-if="errorEmail">{{ errorEmail }}</p>
+
+        <div class="input-group">
+            <font-awesome-icon icon="fa-solid fa-phone" />
+            <input placeholder="Phone" type="text" v-model="phone" @focus="errorPhone = null" required/>
+        </div>
+        <p class="error" v-if="errorPhone">{{ errorPhone }}</p>
 
         <!-- Email -->
         <div class="input-group">
             <font-awesome-icon :icon="['fas', 'user']" />
-            <input placeholder="Nickname" type="text" v-model="nick_name" @focus="errorNickname = null"/>
+            <input placeholder="Nickname" type="text" v-model="nick_name" @focus="errorNickname = null" required/>
         </div>
         <p class="error" v-if="errorNickname">{{ errorNickname }}</p>
 
         <!-- Password -->
         <div class="input-group">
             <font-awesome-icon icon="fa-solid fa-lock" />
-            <input placeholder="Password" type="password" v-model="password" @focus="errorPassword = null"/>
+            <input placeholder="Password" type="password" v-model="password" @focus="errorPassword = null" required/>
         </div>
         <p class="error" v-if="errorPassword">{{ errorPassword }}</p>
 
@@ -58,9 +64,11 @@ export default {
             nick_name: null,
             password: null,
             remember: false,
+            phone: null,
             errorEmail: null,
             errorNickname: null,
             errorPassword: null,
+            errorPhone: null
         };
     },
     methods: {
@@ -71,7 +79,8 @@ export default {
             let data = {
                 email: this.email,
                 nick_name: this.nick_name,
-                password: this.password
+                password: this.password,
+                phone: this.phone
             }
 
             register(data).then((response) => {
@@ -92,6 +101,10 @@ export default {
 
                     if (response.data.errors.password.length > 0) {
                         this.errorPassword = response.data.errors.password[0];
+                    }
+
+                    if (response.data.errors.phone.length > 0) {
+                        this.errorPhone = response.data.errors.phone[0];
                     }
                 }
             }).catch((error) => {

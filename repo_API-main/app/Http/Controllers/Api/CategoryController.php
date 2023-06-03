@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::where('del_flg', 0)->get();
 
         return response()->json([
             'status' => true,
@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
     public function search(string $categoryId)
     {
-        $products = Product::with('images', 'variants', 'categories')->where('category_id', $categoryId)->get();
+        $products = Product::with('images', 'variants', 'category')->where('category_id', $categoryId)->where('type', 1)->where('del_flg', 0)->get();
 
         return response()->json([
             'success' => true,
