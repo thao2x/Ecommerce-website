@@ -1,187 +1,143 @@
 @extends('layout.app')
-@section('title')
-    <div class="pagetitle">
-        <h1>Đơn hàng</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active">#{{ $order->code }}</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-@endsection
 
 @section('content')
-    <style>
-        .datatable-top {
-            display: none
-        }
-
-        .datatable-bottom {
-            display: none
-        }
-
-        .img-product {
-            width: 42px;
-            height: 42px;
-            border-radius: 5px;
-        }
-
-        .w-content {
-            width: fit-content
-        }
-    </style>
-    <div class="row">
-        <div class="col-8">
-            <div class="card recent-sales overflow-auto">
-                <div class="card-body">
-                    <ul class="sidebar-nav pt-3">
-                        <li class="nav-item">
-                            <a class="nav-link w-content justify-content-center p-2">
-                                <span>Sản phẩm</span>
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <div class="pt-2">
-                        @foreach ($order->orderItems as $item)
-                            <div class="row pt-4">
-                                <div class="col-6  d-flex justify-content-start align-items-center">
-                                    <div class="position-relative">
-                                        @if (count($item->variant->product->images) > 0)
-                                            <img class="img-product" src="{{ config('APP_URL') . '/storage' . $item->variant->product->images[0]->src }}">
-                                        @else
-                                            <img class="img-product" src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
-                                        @endif
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {{ $item->quantity }}
-                                        </span>
-                                    </div>
-                                    <span class="ps-3">{{ $item->variant->product->name }}</span>
-                                </div>
-                                <div class="col-3 d-flex justify-content-end align-items-center">
-                                    {{ $item->variant->product->price }} <i class="bi bi-currency-dollar"></i> × {{ $item->quantity }}
-                                </div>
-                                <div class="col-3 d-flex justify-content-end align-items-center">
-                                    {{ $item->quantity * $item->variant->product->price }} <i class="bi bi-currency-dollar"></i>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            <div class="card recent-sales overflow-auto">
-                <div class="card-body pb-0">
-                    <ul class="sidebar-nav pt-3">
-                        <li class="nav-item">
-                            <a class="nav-link w-content justify-content-center p-2" href="#">
-                                <span>Thanh toán</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="row">
-                        <div class="col-3">
-                            <p class="p-1 m-0">Tổng phụ</p>
-                            <p class="p-1 m-0">Vận chuyển</p>
-                            <p class="p-1 m-0">Giảm giá</p>
-                            <p class="p-1 m-0"><b>Tổng</b></p>
-                        </div>
-                        <div class="col-3">
-                            <p class="p-1 m-0">{{ $order->orderItems->count() }} mặt hàng</p>
-                            <p class="p-1 m-0">STANDARD </p>
-                            <p class="p-1 m-0">
-                                {{ $order->promo->name}}
-                                ({{ $order->promo->percentage}}<i class="bi bi-percent"></i>)
-                            </p>
-                        </div>
-                        <div class="col-6">                            
-                            @php
-                                $total = 0;
-
-                                foreach($order->orderItems as $item) {
-                                    // Cộng tiền mỗi sản phẩm
-                                    $total += ($item->variant->product->price * $item->quantity);
-                                }
-                            @endphp
-
-                            <p class="p-1 mb-0 text-end">{{ $total }} <i class="bi bi-currency-dollar"></i></p>
-                            <p class="p-1 mb-0 text-end">
-                                {{ $order->shipping->price }} <i class="bi bi-currency-dollar"></i>
-                            </p>
-                            <p class="p-1 mb-0 text-end">
-                                {{ $order->promo->percentage/100 * $total}} <i class="bi bi-currency-dollar"></i>
-                            </p>
-                            <p class="p-1 mb-0 text-end">
-                                @php
-                                    // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
-                                    $total -= ($order->promo->percentage/100 * $total);
-
-                                    // Cộng tiền ship cho mỗi đơn hàng
-                                    $total += $order->shipping->price;
-                                @endphp
-
-                                <b>{{ $total }} <i class="bi bi-currency-dollar"></i></b>
-                            </p>
-                        </div>
-                        <div class="p-4 d-flex justify-content-end">
-                            @if ($order->status == 1)
-                                <form method="post" action="{{ route('orders.cancel', $order->id) }}">
-                                    @method('patch')
-                                    @csrf
-                                    <button class="btn btn-outline-secondary me-3">Hủy đơn hàng</button>
-                                </form>
-                                <form method="post" action="{{ route('orders.update', $order->id) }}">
-                                    @method('patch')
-                                    @csrf
-                                    <button class="btn btn-outline-primary">Duyệt đơn hàng</button>
-                                </form>
-                            @else
-                                @if ($order->status == 3)
-                                    <span class="badge bg-danger  px-4 py-2 fs-6">Đã hủy</span>
-                                @else
-                                    <span class="badge bg-success  px-4 py-2 fs-6">Đã xử lý</span>
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card recent-sales overflow-auto">
-                <div class="card-body">
-                    <ul class="sidebar-nav pt-3">
-                        <li class="nav-item">
-                            <a class="nav-link w-content p-2 mb-3" href="#">Thông tin liên hệ</a>
-                            <div class="row p-1 m-0">
-                                <b class="col-4">Tên: </b>
-                                <span  class="col-8">{{ $order->customer->nick_name }}</span>
-                            </div>
-                            <div class="row p-1 m-0">
-                                <b class="col-4">Email: </b>
-                                <span  class="col-8">{{ $order->customer->email }}</span>
-                            </div>
-                            <div class="row p-1 m-0">
-                                <b class="col-4">SĐT: </b>
-                                <span  class="col-8">{{ $order->customer->phone }}</span>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="sidebar-nav pt-3">
-                        <li class="nav-item">
-                            <a class="nav-link w-content p-2 mb-3" href="#">Địa chỉ giao hàng</a>
-                            <div class="row p-1 m-0">
-                                <b class="col-4">Địa chỉ: </b>
-                                <span  class="col-8">{{ $order->shippingAddress->name }}</span>
-                            </div>
-                            <div class="row p-1 m-0">
-                                <b class="col-4">Chi tiết: </b>
-                                <span  class="col-8">{{ $order->shippingAddress->details }}</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="p-3 d-flex align-items-center justify-content-between pb-0">
+    <div class="d-flex align-items-center">
+        <a href="{{ route('admin.order.index') }}" class="text-secondary"><i class="bi bi-arrow-left"></i></a>
+        <a href="{{ route('admin.order.index') }}" class="my-2 ms-2 fs-3 fw-bold title color--g">{{ $order->code }}</a>
     </div>
+    <div>
+        @if ($order->status == 0)
+            <span class="badge badge-sm bg-gradient-secondary w-auto">Processing</span>
+        @endif
+        @if ($order->status == 1)
+            <span class="badge badge-sm bg-gradient-success w-auto">Completed</span>
+        @endif
+        @if ($order->status == 2)
+            <span class="badge badge-sm bg-gradient-cancel w-auto">Canceled</span>
+        @endif
+    </div>
+</div>
+<div class="row p-3 pt-0">
+    <div class="col-7 p-3">
+        <p class="fs-5 fw-bold m-0 color--g">Product List</p>
+        <div>
+            @foreach ($order->orderItems as $item)
+            <div class="row pt-4">
+                <div class="col-6  d-flex justify-content-start align-items-center">
+                    <div class="position-relative">
+                        @if (count($item->variant->product->images) > 0)
+                        <img class="img-product"
+                            src="{{ config('APP_URL') . '/storage' . $item->variant->product->images[0]->src }}">
+                        @else
+                        <img class="img-product"
+                            src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
+                        @endif
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $item->quantity }}
+                        </span>
+                    </div>
+                    <span class="ps-3">{{ $item->variant->product->name }}</span>
+                </div>
+                <div class="col-3 d-flex justify-content-end align-items-center">
+                    <i class="bi bi-currency-dollar"></i>{{ number_format($item->variant->product->price) }} ×
+                    {{ $item->quantity }}
+                </div>
+                <div class="col-3 d-flex justify-content-end align-items-center">
+                    <i class="bi bi-currency-dollar"></i>{{ number_format($item->quantity *
+                    $item->variant->product->price) }}
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <p class="fs-5 fw-bold m-0 color--g mt-4 ">Payment</p>
+        <div class="row mt-2">
+            <div class="col-3">
+                <p class="p-1 m-0">Subtotal</p>
+                <p class="p-1 m-0">Shipping</p>
+                <p class="p-1 m-0">Discount</p>
+                <p class="p-1 m-0"><b>Total</b></p>
+            </div>
+            <div class="col-3">
+                <p class="p-1 m-0">{{ $order->orderItems->count() }} products</p>
+                <p class="p-1 m-0">{{ $order->shipping->name }}</p>
+                <p class="p-1 m-0"> {{ $order->promo->name}} ({{ $order->promo->percentage}}<i class="bi bi-percent"></i>)</p>
+            </div>
+            <div class="col-6">
+                @php
+                    $total = 0;
+                    foreach($order->orderItems as $item) {
+                        // Cộng tiền mỗi sản phẩm
+                        $total += ($item->variant->product->price * $item->quantity);
+                    }
+                @endphp
+
+                <p class="p-1 mb-0 text-end">
+                    <i class="bi bi-currency-dollar"></i>{{ number_format($total) }}
+                </p>
+                <p class="p-1 mb-0 text-end">
+                    <i class="bi bi-currency-dollar"></i>{{ number_format($order->shipping->price) }}
+                </p>
+                <p class="p-1 mb-0 text-end">
+                    <i class="bi bi-currency-dollar"></i>{{ number_format($order->promo->percentage/100 * $total) }}
+                </p>
+
+                <p class="p-1 mb-0 text-end">
+                    @php
+                        // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
+                        if (isset($order->promo)) {
+                            $total -= ($order->promo->percentage/100 * $total);
+                        }
+
+                        // Cộng tiền ship cho mỗi đơn hàng
+                        $total += $order->shipping->price;
+                    @endphp
+
+                    <b>
+                        <i class="bi bi-currency-dollar"></i>{{ number_format($total) }}
+                    </b>
+                </p>
+            </div>
+            <div class="p-4 d-flex justify-content-end">
+                @if ($order->status == 0)
+                    <a href="{{ route('admin.order.update-canceled', $order->id) }}" class="btn btn-outline-danger me-3">Canceled</a>
+                    <a href="{{ route('admin.order.update-completed', $order->id) }}" class="btn btn-outline-success">Completed</a>
+                @endif
+            </div>
+        </div>
+
+    </div>
+    <div class="col-5 ps-5">
+        <ul class="sidebar-nav pt-3">
+            <li class="nav-item">
+                <p class="fs-5 fw-bold m-0 mb-4 color--g">Contact</p>
+                <div class="row p-1 m-0">
+                    <span class="col-4">Name: </span>
+                    <span class="col-8 fs-6 fw-bold">{{ $order->customer->nick_name }}</span>
+                </div>
+                <div class="row p-1 m-0">
+                    <span class="col-4">Email: </span>
+                    <span class="col-8 fs-6 fw-bold">{{ $order->customer->email }}</span>
+                </div>
+                <div class="row p-1 m-0">
+                    <span class="col-4">Phone: </span>
+                    <span class="col-8 fs-6 fw-bold">{{ $order->customer->phone }}</span>
+                </div>
+            </li>
+        </ul>
+        <ul class="sidebar-nav pt-3">
+            <li class="nav-item">
+                <p class="fs-5 fw-bold m-0 mb-4 color--g">Delivery addres</p>
+                <div class="row p-1 m-0">
+                    <span class="col-4">Address: </span>
+                    <span class="col-8 fs-6 fw-bold">{{ $order->shippingAddress->name }}</span>
+                </div>
+                <div class="row p-1 m-0">
+                    <span class="col-4">Details: </span>
+                    <span class="col-8 fs-6 fw-bold">{{ $order->shippingAddress->details }}</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
 @endsection

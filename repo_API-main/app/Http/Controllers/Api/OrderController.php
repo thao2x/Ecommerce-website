@@ -16,17 +16,17 @@ class OrderController extends Controller
     public function index()
     {
         $customer = Auth::guard('api-customer')->user();
-        $orders = Order::with('orderItems.variant.product.images')->where('customer_id', $customer->id)->get();
+        $orders = Order::with('orderItems.variant.product.images', 'shipping', 'promo')->where('customer_id', $customer->id)->where('del_flg', 0)->get();
 
         return response()->json([
-            'status' => true,
+            'success' => true,
             'data' => $orders
         ], 200);
     }
 
     public function show(string $orderId)
     {
-        $order = Order::with('orderItems.variant.product.images')->find($orderId);
+        $order = Order::with('orderItems.variant.product.images', 'shipping', 'promo', 'shippingAddress', 'customer')->where('del_flg', 0)->find($orderId);
 
         if (is_null($order)) {
             return response()->json([
@@ -39,6 +39,19 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Order details",
+            'data' => $order
+        ], 200);
+    }
+
+    public function cancel(string $orderId)
+    {
+        Order::find($orderId)->update(['status' => 2]);
+
+        $order = Order::with('orderItems.variant.product.images', 'shipping', 'promo', 'shippingAddress', 'customer')->where('del_flg', 0)->find($orderId);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Order Update",
             'data' => $order
         ], 200);
     }
@@ -87,7 +100,7 @@ class OrderController extends Controller
         );
 
         // Lấy danh sách order sau khi thêm mới order
-        $data = Order::with('orderItems.variant.product.images')->where('customer_id', $customer->id)->get();
+        $data = Order::with('orderItems.variant.product.images')->where('customer_id', $customer->id)->where('del_flg', 0)->get();
 
         return response()->json([
             'success' => true,

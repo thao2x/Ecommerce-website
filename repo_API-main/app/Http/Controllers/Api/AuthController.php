@@ -38,6 +38,14 @@ class AuthController extends Controller
         }
 
         $user = Auth::guard('customer')->user();
+        if ($user->del_flg == 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+                'data' => []
+            ], 401);
+        }
+
         $token = $user->createToken('Token')->accessToken;
 
         return response()->json([

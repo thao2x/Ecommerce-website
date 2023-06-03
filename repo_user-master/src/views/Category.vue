@@ -80,7 +80,6 @@ export default {
     .product {
         display: flex;
         flex-wrap: wrap;
-        gap: 5%;
         justify-content: space-between;
         padding: 0 5%;
         height: calc(100% - 60px);

@@ -1,26 +1,32 @@
 <template>
-    <div class="slides">
-        <div class="slides__img" v-for="(image, index) in images" :key="index">
-            <img :src="getCurrentImage(image.src)" alt="" v-if="index == active">
+    <div ref="swiper" class="swiper slides">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide slides__img" v-for="(image, index) in images" :key="index">
+                <img :src="getCurrentImage(image.src)" />
+            </div>
         </div>
 
-        <span class="prev" @click="prev()">
-            <font-awesome-icon icon="fa-solid fa-chevron-left" />
-        </span>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
 
-        <span class="next" @click="next()">
-            <font-awesome-icon icon="fa-solid fa-chevron-right" />
-        </span>
+        <!-- If we need navigation buttons -->
+        <!-- <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div> -->
 
-        <ul class="dots">
-            <li v-for="(dot, index) in images" :class="{ active: index === active }" @click="jump(index)" :key="index">
-            </li>
-        </ul>
+        <!-- If we need scrollbar -->
+        <div class="swiper-scrollbar"></div>
     </div>
 </template>
   
 <script>
 import { mixin } from '@/mixin'
+import Swiper, { Navigation, Pagination } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 export default {
     mixins: [mixin],
     props: {
@@ -33,6 +39,33 @@ export default {
         return {
             active: 0
         }
+    },
+    mounted() {
+        const self = this;
+        setTimeout(function () {
+            new Swiper(self.$refs.swiper, {
+                // configure Swiper to use modules
+                modules: [Navigation, Pagination],
+                // Optional parameters
+                loop: true,
+
+                // If we need pagination
+                pagination: {
+                    el: '.swiper-pagination',
+                },
+
+                // Navigation arrows
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+
+                // And if we need scrollbar
+                scrollbar: {
+                    el: '.swiper-scrollbar',
+                },
+            })
+        }, 1000);
     },
     methods: {
         prev() {
@@ -49,82 +82,32 @@ export default {
             }
         },
 
-        jump(index) {
-            this.active = index
+        onSwiper() {
+            console.log(register);
+        },
+
+        onSlideChange() {
+            console.log('slide change');
         }
     }
 }
 </script>
   
 <style lang="scss" scoped>
-$primary: #221e21;
-
 .slides {
     width: 100%;
     height: 422px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &__img {
 
         img {
-            height: 422px;
+            height: 100%;
             width: 100%;
             object-fit: cover;
             transition: all ease-in-out 0.5s;
-        }
-    }
-
-    .prev,
-    .next {
-        position: absolute;
-        top: 50%;
-        width: 50px;
-        height: 50px;
-        border: 2px solid #221e21;
-        color: #221e21;
-        border-radius: 50%;
-        cursor: pointer;
-        line-height: 48px;
-        text-align: center;
-        text-indent: -2px;
-        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform: translateY(-50%);
-
-        &:active {
-            transform: translate(0, 3px) scale(1.2);
-        }
-    }
-
-    .next {
-        right: 5%;
-    }
-
-    .prev {
-        left: 5%;
-    }
-
-    .dots {
-        position: absolute;
-        display: block;
-        width: 100%;
-        text-align: center;
-        bottom: 6%;
-
-        li {
-            width: 6px;
-            height: 6px;
-            border-radius: 3px;
-            background: $primary;
-            opacity: 0.2;
-            display: inline-block;
-            margin: 0 3px;
-            cursor: pointer;
-            transition: opacity 0.4s ease-in-out, width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-            &.active {
-                width: 22px;
-                opacity: 1;
-            }
         }
     }
 }

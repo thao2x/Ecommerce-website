@@ -57,7 +57,7 @@
             <div class="total">
                 <div class="total__text">
                     <p>Total price</p>
-                    <span>${{ product.price * quantity }}</span>
+                    <span>${{ (product.price * quantity).toLocaleString("en-IN") }}</span>
                 </div>
                 <div class="total__btn">
                     <button @click="addToCart()" :class="{ loadingButton: isActive }">
@@ -161,7 +161,7 @@ export default {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 1;
+            z-index: 2;
         }
 
         .product {

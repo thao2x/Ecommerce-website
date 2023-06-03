@@ -1,75 +1,104 @@
 @extends('layout.app')
-@section('title')
-    <div class="pagetitle">
-        <h1>Sản phẩm</h1>
-    </div>
-@endsection
 
 @section('content')
-    <div class="col-12">
-        <div class="card recent-sales overflow-auto">
-            <div class="card-body">
-                <div class="d-flex justify-content-between my-3">
-                    <form method="get" action="{{ route('admin.product.index') }}">
-                        <div class="form-group has-search d-flex justify-content-between">
-                            <input type="text" class="form-control ms-2" name="query" value="{{ $query_prev }}" placeholder="Tìm kiếm">
-                            <button type="submit" class="btn btn-outline-secondary ms-2"><i class="bi bi-search"></i></button>
-                        </div>
-                    </form>                    
-                    <a class="btn btn-success w-auto" href="{{route('admin.product.store')}}">
-                        <span>Thêm mới</span>
-                    </a>
-                </div>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col">Sảm phẩm</th>
-                            <th scope="col">Loại</th>
-                            <th scope="col">Giá</th>
-                            <th scope="col">Ngày thêm</th>
-                            <th scope="col">Người thêm</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($products as $product)
-                            @if ($product->del_flg == 0 && $product->name)
-                                <tr>
-                                    <td scope="col" class="text-primary">
-                                        <div class="position-relative">
-                                            @if (count($product->images) > 0)
-                                                <img class="img-product" src="{{ config('APP_URL') . '/storage' . $product->images[0]->src }}">
-                                            @else
-                                                <img class="img-product" src="https://media.istockphoto.com/id/931643150/vector/picture-icon.jpg?s=170667a&w=0&k=20&c=3Jh8trvArKiGdBCGPfe6Y0sUMsfh2PrKA0uHOK4_0IM=">
-                                            @endif
-                                            <a class="ps-3" href="{{ route('admin.product.show', $product->id) }}">{{ $product->name }}</a>
-                                        </div>
-                                    </td>
-                                    <td scope="col">
-                                        @if ($product->type == 1)
-                                            <span class="badge bg-secondary">Nháp</span>
-                                        @else
-                                            <span class="badge bg-success">Đang hoạt động</span>
-                                        @endif
-                                    </td>
-                                    <td scope="col">
-                                        {{ $product->price }} 
-                                        <i class="bi bi-currency-dollar"></i>
-                                    </td>
-                                    <td scope="col">
-                                        {{ $product->created_at }}
-                                    </td>
-                                    <td scope="col">
-                                        {{ $product->user->full_name }}
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-
-                {{ $products->links('vendor.pagination.custom') }}
-            </div>
-
-        </div>
+    <div class="d-flex justify-content-between my-3">
+        <a class="btn btn-outline-primary w-auto" href="{{ route('admin.product.create') }}">
+            <span>Add Product</span>
+        </a>
     </div>
+    <table class="table align-items-center mb-0" id="table">
+        <thead>
+            <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product name</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Brand</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+            </tr>
+        </thead>
+    </table>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            $('#table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('admin.product.data') }}",
+                autoWidth: false,
+                language: {
+                    paginate: {
+                        first: "<<",
+                        last: ">>",
+                        next: ">",
+                        previous: "<"
+                    },
+                },
+                columns: [{
+                        data: 'name',
+                        width: '30%',
+                        render: function(data, type, row, meta) {
+                            let url_detail = "{{ route('admin.product.show', '--productID--') }}";
+                            return `<div class="d-flex px-2 py-1">
+                                    <div>
+                                        <img class="avatar avatar-sm me-3" src="${row.images.length ? "{{ config('APP_URL') . '/storage' }}" + row.images[0]?.src : " {{ asset('assets/img/no_image.png') }}"}">
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <a class="ps-3" href="${url_detail.replace("--productID--", row.id)}">${row.name}</a>
+                                    </div>
+                                </div>`;
+                        }
+                    },
+                    {
+                        data: 'category',
+                        width: '15%',
+                        render: function(data, type, row, meta) {
+                            return data.name;
+                        }
+                    },
+                    {
+                        data: 'type',
+                        width: '15%',
+                        render: function(data, type, row, meta) {
+                            if (parseInt(data) == 0) {
+                                return `<span class="badge badge-sm bg-gradient-secondary">Draft</span>`;
+                            }
+                            return `<span class="badge badge-sm bg-gradient-success">Active</span>`;
+                        }
+                    },
+                    {
+                        data: 'price',
+                        width: '10%',
+                        render: function(data, type, row, meta) {
+                            return `<i class="bi bi-currency-dollar"></i>${data.toLocaleString("en-IN")}`;
+                        }
+                    },
+                    {
+                        data: 'description',
+                        width: '20%',
+                        render: function(data, type, row, meta) {
+                            if (data) {
+                                return `<span class="line-two">${data}</span>`
+                            };
+                            return '';
+                        }
+                    },
+                    {
+                        data: 'id',
+                        width: '10%',
+                        render: function(data, type, row, meta) {
+                            let url_detail = "{{ route('admin.product.show', '--productID--') }}";
+                            let url_del = "{{ route('admin.product.destroy', '--productID--') }}";
+                            return `<div>
+                                <a class="btn btn-outline-success" href="${url_detail.replace("--productID--", row.id)}"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-outline-danger" href="${url_del.replace("--productID--", row.id)}"><i class="bi bi-trash"></i></a>
+                            </div>`;
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
 @endsection

@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('images', 'variants')->get();
+        $products = Product::with('images', 'variants')->where('type', 1)->where('del_flg', 0)->get();
 
         return response()->json([
             'success' => true,
@@ -20,8 +20,7 @@ class ProductController extends Controller
 
     public function show(string $productId)
     {
-        $product = Product::with('images', 'variants')->find($productId);
-
+        $product = Product::with(['images', 'variants' => fn($query) => $query->where('del_flg', 0)])->where('type', 1)->where('del_flg', 0)->find($productId);
         return response()->json([
             'success' => true,
             'data' => $product
@@ -30,7 +29,7 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $products = Product::with('images', 'variants')->where(function ($query) use ($request) {
+        $products = Product::with(['images', 'variants' => fn($query) => $query->where('del_flg', 0)])->where('type', 1)->where('del_flg', 0)->where(function ($query) use ($request) {
             $query->where('name', 'LIKE', '%' . $request['query'] . '%');
         })->get();
 

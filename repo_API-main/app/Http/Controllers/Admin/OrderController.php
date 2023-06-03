@@ -5,24 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use Yajra\Datatables\Datatables;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::where(function ($query) use ($request) {
-            if ($request->has('customer_id')) {
-                $query->where('customer_id', $request['customer_id']);
-            }
-            if ($request->has('query')) {
-                $query->where('code', 'LIKE', '%' . $request['query'] . '%');
-            }
-        })->orderBy('created_at', 'DESC')->paginate(10);
+        return view('admin.order');
+    }
 
-        return view('admin.order', [
-            'orders' => $orders,
-            'query_prev' =>  $request['query']
-        ]);
+    public function data()
+    {
+        $orders = Order::with('customer', 'promo', 'orderItems.variant.product', 'shipping')->where('del_flg', 0)->get();
+        return Datatables::of($orders)->make();
     }
 
     public function show(string $orderId)
@@ -33,15 +28,15 @@ class OrderController extends Controller
         ]);
     }
 
-    public function update(string $orderId)
+    public function updateCanceled(string $orderId)
     {
         Order::find($orderId)->update(['status' => 2]);
         return redirect()->back();
     }
 
-    public function destroy(string $orderId)
+    public function updateCompleted(string $orderId)
     {
-        Order::find($orderId)->update(['status' => 3]);
+        Order::find($orderId)->update(['status' => 1]);
         return redirect()->back();
     }
 }

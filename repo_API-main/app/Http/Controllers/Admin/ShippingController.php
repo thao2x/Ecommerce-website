@@ -6,95 +6,62 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Shipping;
+use Yajra\Datatables\Datatables;
 
 class ShippingController extends Controller
 {
     public function index()
     {
-        $shippings = Shipping::orderBy('created_at', 'DESC')->get();
+        return view('admin.shipping');
+    }
 
-        return view('admin.shipping', [
-            'shippings' => $shippings
-        ]);
+    public function data()
+    {
+        $shippings = Shipping::orderBy('created_at', 'DESC')->where('del_flg', 0)->get();
+
+        return Datatables::of($shippings)->make();
+    }
+
+    public function create()
+    {
+        return view('admin.shipping-create');
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
-        }
-
         Shipping::create([
             'name' => $request['name'],
             'description' => $request['description'],
             'price' => $request['price']
         ]);
 
-        $shippings = Shipping::orderBy('created_at', 'DESC')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $shippings
-        ], 200);
+        return redirect()->route('admin.shipping.index');
     }
 
     public function show(string $shippingId)
     {
-        $category = Shipping::findOrFail($shippingId);
+        $shipping = Shipping::findOrFail($shippingId);
 
-        return response()->json([
-            'success' => true,
-            'data' => $category
-        ], 200);
+        return view('admin.shipping-detail', [
+            'shipping' => $shipping
+        ]);
     }
 
     public function update(Request $request, string $shippingId)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->messages()
-            ], 200);
-        }
-
         Shipping::findOrFail($shippingId)->update([
             'name' => $request['name'],
             'description' => $request['description'],
             'price' => $request['price']
         ]);
 
-        // Lấy lại danh sách shippings mới nhất
-        $shippings = Shipping::orderBy('created_at', 'DESC')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $shippings
-        ], 200);
+        return redirect()->route('admin.shipping.index');
     }
 
     public function destroy(string $shippingId)
     {
         Shipping::findOrFail($shippingId)->update(['del_flg' => 1]);
-        $shippings = Shipping::orderBy('created_at', 'DESC')->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $shippings
-        ], 200);
+        return redirect()->route('admin.shipping.index');
     }
 }

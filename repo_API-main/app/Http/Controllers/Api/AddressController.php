@@ -13,7 +13,7 @@ class AddressController extends Controller
     public function index()
     {
         $user = Auth::guard('api-customer')->user();
-        $address = ShippingAddress::where('customer_id', $user->id)->get();
+        $address = ShippingAddress::where('customer_id', $user->id)->where('del_flg', 0)->get();
 
         return response()->json([
             'status' => true,
@@ -62,7 +62,7 @@ class AddressController extends Controller
             ], 200);
         }
 
-        $address = ShippingAddress::findOrFail($id);
+        $address = ShippingAddress::where('del_flg', 0)->findOrFail($id);
         $address->update([
             'name' => $request['name'],
             'details' => $request['details'],

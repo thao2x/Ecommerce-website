@@ -1,91 +1,130 @@
 @extends('layout.app')
-@section('title')
-    <div class="pagetitle">
-        <h1>Đơn hàng</h1>
-    </div><!-- End Page Title -->
-@endsection
 
 @section('content')
-<style>
-    .datatable-top {
-        display: none
-    }
-    .datatable-bottom {
-        display: none
-    }
-</style>
-    <!-- Recent Sales -->
-    <div class="col-12">
-        <div class="card recent-sales overflow-auto">
+<div class="d-flex justify-content-between my-3 mb-1">
+    <h2 class="my-2 fw-bold title">Order List</h2>
+</div>
+<div class="d-flex mt-2">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="status" value="" id="all" checked>
+        <label class="form-check-label text-uppercase" for="all">
+            All Orders
+        </label>
+    </div>
+    <div class="form-check ms-2">
+        <input class="form-check-input" type="radio" name="status" value="0" id="processing">
+        <label class="form-check-label text-uppercase" for="processing">
+            Processing
+        </label>
+    </div>
+    <div class="form-check ms-2">
+        <input class="form-check-input" type="radio" name="status" value="1" id="completed">
+        <label class="form-check-label text-uppercase" for="completed">
+            Completed
+        </label>
+    </div>
+    <div class="form-check ms-2">
+        <input class="form-check-input" type="radio" name="status" value="2" id="canceled">
+        <label class="form-check-label text-uppercase" for="canceled">
+            Canceled
+        </label>
+    </div>
+</div>
+<table class="table align-items-center mb-0" id="table">
+    <thead>
+        <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order ID</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Order Date</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Items</th>
+        </tr>
+    </thead>
+</table>
+@endsection
 
-            <div class="card-body">
-                <div class="d-flex justify-content-between my-3">
-                    <a class="btn btn-primary disabled ms-2">
-                        <span>Tất cả</span>
-                    </a>
-                    <form method="get" action="{{ route('admin.order.index') }}">
-                        <div class="form-group has-search d-flex justify-content-between">
-                                <input type="text" class="form-control me-2" name="query" value="{{ $query_prev }}" placeholder="Tìm kiếm">
-                                <button type="submit" class="btn btn-outline-secondary me-3"><i class="bi bi-search"></i></button>
-                        </div>
-                    </form>
-                </div>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col">Đơn hàng</th>
-                            <th scope="col">Ngày</th>
-                            <th scope="col">Khách hàng</th>
-                            <th scope="col">Tổng</th>
-                            <th scope="col">Trạng thái</th>
-                            <th scope="col">Mặt hàng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($orders as $order)
-                            <tr>
-                                <td scope="col" class="text-primary">
-                                    <a href="{{ route('admin.order.show', $order->id) }}">#{{ $order->code }}</a>
-                                </td>
-                                <td scope="col">{{ $order->created_at }}</td>
-                                <td scope="col">{{ $order->customer->full_name }}</td>
-                                <td scope="col">
-                                    @php
-                                        $total = 0;
+@section('script')
+<script>
+    $(document).ready(function () {
+        var table = $('#table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.order.data') }}",
+            autoWidth: false,
+            language: {
+                paginate: {
+                    first:      "<<",
+                    last:       ">>",
+                    next:       ">",
+                    previous:   "<"
+                },
+            },
+            columns: [
+                { 
+                    data: 'code',
+                    width: '20%',
+                    render: function(data, type, row, meta){
+                        let url_detail = "{{ route('admin.order.show', '--code--') }}";
+                        return `<a href="${url_detail.replace("--code--", row.id)}">#${row.code}</a>`;
+                    }
+                },
+                { 
+                    data: 'created_at',
+                    width: '15%',
+                },
+                { 
+                    data: 'customer',
+                    width: '25%',
+                    render: function(data, type, row, meta){
+                        return data.full_name;
+                    }
+                },
+                { 
+                    data: 'order_items',
+                    width: '15%',
+                    render: function(data, type, row, meta){
+                        let total = 0;
+                        let amount = row.order_items.reduce((total, item) => total + (item.variant.product.price * item.quantity), 0);
+                        total += amount;
+                        total += row.shipping.price;
+                        if (row.promo) {
+                            total -= row.promo.percentage / 100 * amount;
+                        }
+                        return `$${total.toLocaleString("en-IN")}`;
+                    }
+                },
+                { 
+                    data: 'status',
+                    width: '15%',
+                    render: function(data, type, row, meta){
+                        if (parseInt(data) == 0) {
+                            return `<span class="badge badge-sm bg-gradient-secondary w-auto">Processing</span>`;
+                        }
+                        if (parseInt(data) == 1) {
+                            return `<span class="badge badge-sm bg-gradient-success w-auto">Completed</span>`;
+                        }
+                        return `<span class="badge badge-sm bg-gradient-cancel w-auto">Canceled</span>`;
+                    }
+                },
+                { 
+                    data: 'order_items',
+                    width: '10%',
+                    render: function(data, type, row, meta){
+                        return `${data.length} items`;
+                    }
+                }
+            ]
+        });
 
-                                        foreach($order->orderItems as $item) {
-                                            // Cộng tiền mỗi sản phẩm
-                                            $total += ($item->variant->product->price * $item->quantity);
-                                        }
-                                        
-                                        // Trừ tiền cho mỗi đơn hàng theo mã giảm giá
-                                        $total -= ($order->promo->percentage/100 * $total);
+        $('[name="status"]').on('change', function(){
+            let status = $(this).val() ? "^" + $(this).val() + "$" : "";
+            table.column(4).search(status, true, false, true).draw();
+        });
 
-                                        // Cộng tiền ship cho mỗi đơn hàng
-                                        $total += $order->shipping->price;
-
-                                    @endphp
-
-                                    {{ $total }} <i class="bi bi-currency-dollar"></i>
-                                </td>
-                                <td scope="col">
-                                    @if ($order->status == 1)
-                                        <span class="badge bg-info ">Chưa xử lý</span>
-                                    @elseif ($order->status == 2)
-                                        <span class="badge bg-success">Đã xử lý</span>
-                                    @else
-                                        <span class="badge bg-danger">Đã hủy</span>
-                                    @endif                                    
-                                </td>
-                                <td scope="col">{{ $order->orderItems->count() }} mặt hàng</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-                {{ $orders->links('vendor.pagination.custom') }}
-            </div>
-
-        </div>
-    </div><!-- End Recent Sales -->
+        $('#table_length').hide();
+        $('#table_filter').hide();
+        $('#table_info').hide();
+    });
+</script>
 @endsection

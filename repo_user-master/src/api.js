@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.7/api";
+const BASE_URL = "http://192.168.11.105/api";
 const CUSTOMER_URL = "/customer";
 const CATEGORIES_URL = "/categories";
 const PROMO_URL = "/promos";
@@ -17,6 +17,8 @@ const UPDATE_ADDRESS_URL = "/address/";
 const SHIPPING_URL = "/shipping";
 const REGISTER_URL = "/register";
 const CREATE_ORDER = "/orders";
+const ORDER_URL = "/orders";
+const ORDER_BY_ID_URL = "/orders/";
 
 let instance = axios.create({
     baseURL: BASE_URL,
@@ -112,7 +114,7 @@ export const getUser = () => {
     });
 };
 
-export const updateUser = (data) => {    
+export const updateUser = (data) => {
     return instance.post(CUSTOMER_URL, data, {
         headers: { ...authHeader(), 'Content-Type': 'multipart/form-data' }
     });
@@ -132,6 +134,24 @@ export const updateAddress = (data, id) => {
 
 export const addOrder = (data) => {
     return instance.post(CREATE_ORDER, data, {
+        headers: authHeader()
+    });
+};
+
+export const getOrder = () => {
+    return instance.get(ORDER_URL, {
+        headers: authHeader()
+    });
+};
+
+export const getOrdertById = (orderId) => {
+    return instance.get(ORDER_BY_ID_URL + orderId, {
+        headers: authHeader()
+    });
+};
+
+export const cancelOrder = (orderId) => {
+    return instance.post(ORDER_BY_ID_URL + orderId, {}, {
         headers: authHeader()
     });
 };

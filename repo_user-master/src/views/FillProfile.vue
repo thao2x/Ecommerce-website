@@ -42,7 +42,7 @@
                 </select>
             </div>
 
-            <button @click="changeProfile()">Continue</button>
+            <button @click="changeProfile()">Done</button>
         </div>
     </div>
 </template>
@@ -96,7 +96,7 @@ export default {
 
                 if (response.data.success) {
                     // Lưu thông tin user vào vuex store
-                    this.$store.commit('changeUser', response.data.data);
+                    this.$store.commit('changeUser', response.data);
 
                     // Redirect về lại trang profile
                     this.goToPage('profile');

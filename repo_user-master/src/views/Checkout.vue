@@ -80,8 +80,7 @@
                         </select>
                     </div>
                 </div>
-
-
+                
                 <!-- Total -->
                 <div class="price">
                     <div class="total">
@@ -279,7 +278,7 @@ export default {
             this.loadingCreateOrder = true;
 
             let data = {
-                shiping_address_id: this.address.id,
+                shiping_address_id: this.addressStore.id,
                 shipping_id: this.shipping,
                 promo_id: this.promo,
                 variants: this.items
@@ -386,7 +385,6 @@ export default {
                 .cart {
                     display: flex;
                     align-items: center;
-                    gap: 10px;
                     height: 12vh;
                     padding: 15px;
                     margin-bottom: 20px;
