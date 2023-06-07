@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api";
+const BASE_URL = "http://localhost:8000/api";
 const CUSTOMER_URL = "/customer";
 const CATEGORIES_URL = "/categories";
 const PROMO_URL = "/promos";
@@ -128,6 +128,12 @@ export const getAddress = () => {
 
 export const updateAddress = (data, id) => {
     return instance.post(UPDATE_ADDRESS_URL + id, data, {
+        headers: authHeader()
+    });
+};
+
+export const addAddress = (data) => {
+    return instance.post(ADDRESS_URL, data, {
         headers: authHeader()
     });
 };

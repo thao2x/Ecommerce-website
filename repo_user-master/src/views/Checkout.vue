@@ -116,7 +116,7 @@
 
             <!-- Footer -->
             <div class="footer">
-                <button @click="complete()">
+                <button @click="complete()" :class="{ 'disabled': !addressStore || items.length == 0 }">
                     <font-awesome-icon :icon="['fas', 'gift']" />
                     Order</button>
             </div>
@@ -125,12 +125,14 @@
         <!-- Popup edit address -->
         <div class="content-x" v-if="showEditAddress"></div>
         <div class="table" :class="[{ 'is-hiden': !showEditAddress }]">
-            <h2>Edit Address</h2>
+            <h2>{{ addressStore ? 'Edit' : 'Add' }} Address</h2>
             <div class="input-group">
-                <input placeholder="City" type="text" v-model="address.name" />
+                <input placeholder="City" type="text" v-model="address.name" @focus="errorNameAddress = null" />
+                <p class="c-red">{{ errorNameAddress }}</p>
             </div>
             <div class="input-group">
-                <input placeholder="Detail" type="text" v-model="address.details" />
+                <input placeholder="Detail" type="text" v-model="address.details" @focus="errorDetailAddress = null" />
+                <p class="c-red">{{ errorDetailAddress }}</p>
             </div>
             <div class="edit--btn">
                 <button class="btn--cancel" @click="handleCancelUpdateAddress()">Cancel</button>
@@ -159,7 +161,7 @@ import Loading from '@/components/Loading'
 import BackButton from '@/components/BackButton'
 import LoadingButton from '@/components/LoadingButton.vue'
 
-import { updateAddress, getPromos, getShippings, addOrder } from "@/api";
+import { addAddress, updateAddress, getPromos, getShippings, addOrder } from "@/api";
 
 export default {
     mixins: [mixin],
@@ -177,7 +179,9 @@ export default {
             address: {
                 name: null,
                 details: null
-            }
+            },
+            errorNameAddress: null,
+            errorDetailAddress: null
         }
     },
 
@@ -269,21 +273,56 @@ export default {
                 details: this.address.details
             }
 
-            // Update quantity của item trong giỏ hàng
-            updateAddress(data, this.address.id).then((response) => {
-                if (response.data.success) {
-                    // Lưu data cart mới vào state vuex store
-                    this.$store.commit('changeAddress', response.data.data);
-                }
-            }).catch(() => {
-            }).finally(() => {
-                // Ẩn loading
-                this.loading = false;
-                this.showEditAddress = false;
-            })
+            if (!this.addressStore) {
+                // Thêm địa chỉ mới
+                addAddress(data).then((response) => {
+                    if (response.data.success) {
+                        // Lưu data cart mới vào state vuex store
+                        this.$store.commit('changeAddress', response.data.data);
+                        this.showEditAddress = false;
+                    } else {
+                        if (response.data.data.name?.length > 0) {
+                            this.errorNameAddress = response.data.data.name[0];
+                        }
+
+                        if (response.data.data.details?.length > 0) {
+                            this.errorDetailAddress = response.data.data.details[0];
+                        }
+                    }
+                }).catch(() => {
+                }).finally(() => {
+                    // Ẩn loading
+                    this.loading = false;
+                })
+            } else {
+                // Update quantity của item trong giỏ hàng
+                updateAddress(data, this.addressStore.id).then((response) => {
+                    if (response.data.success) {
+                        // Lưu data cart mới vào state vuex store
+                        this.$store.commit('changeAddress', response.data.data);
+
+                        this.showEditAddress = false;
+                    } else {
+                        if (response.data.data.name?.length > 0) {
+                            this.errorNameAddress = response.data.data.name[0];
+                        }
+
+                        if (response.data.data.details?.length > 0) {
+                            this.errorDetailAddress = response.data.data.details[0];
+                        }
+                    }
+                }).catch(() => {
+                }).finally(() => {
+                    // Ẩn loading
+                    this.loading = false;
+                })
+            }
         },
 
         complete() {
+            // Kiểm tra đã có địa chỉ hoặc sản phẩm chưa
+            if (!this.addressStore || this.items.length == 0) return;
+
             // Hiện loading
             this.loadingCreateOrder = true;
 
@@ -670,6 +709,11 @@ export default {
             svg {
                 margin-right: 10px;
             }
+
+            &.disabled {
+                background-color: #888888;
+                cursor: not-allowed;
+            }
         }
     }
 }
@@ -845,6 +889,13 @@ export default {
 
     .loadingButton {
         background-color: #000;
+    }
+
+    p.c-red {
+        color: red;
+        margin: 0;
+        padding: 0;
+        margin-top: 10px;
     }
 }
 </style>

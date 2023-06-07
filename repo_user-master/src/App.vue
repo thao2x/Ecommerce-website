@@ -52,7 +52,8 @@ export default {
           self.$store.commit('changeAddress', result[5].value.data.data[0]);
         })
         .catch((error) => {
-          // console.log(error);
+          // Clear data user khi call api bị lỗi
+          localStorage.removeItem('user');
         }).finally(() => {
           // Ẩn loading
           self.loading = false;

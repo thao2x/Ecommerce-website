@@ -125,7 +125,7 @@ export default {
                 quantity: this.quantity
             }
 
-            // Them san pham
+            // Thêm san pham
             addProductToCart(data).then((response) => {
                 if (response.data.success) {
                     // Lưu data cart mới vào state vuex store
@@ -133,8 +133,10 @@ export default {
 
                     this.goToPage('cart');
                 }
-            }).catch(() => {
-                console.log(response.data);
+            }).catch((err) => {
+                if (err.response.status == 401) {
+                    this.goToPage('login');
+                }
             }).finally(() => {
                 // Ẩn loading
                 this.loadingButton = false;

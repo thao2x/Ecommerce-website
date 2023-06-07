@@ -20,7 +20,7 @@ export const mixin = {
         },
 
         getCurrentImage: function (url) {
-            return "http://localhost:8080/storage" + url;
+            return "http://localhost:8000/storage" + url;
         }
     }
 }

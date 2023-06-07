@@ -25,10 +25,8 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => ['required'],
             'name' => ['required'],
             'details' => ['required'],
-            'default_flg' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +37,13 @@ class AddressController extends Controller
             ], 200);
         }
 
-        $address = ShippingAddress::create($request->all());
+        $user = Auth::guard('api-customer')->user();
+        $address =  ShippingAddress::create([
+            'customer_id' => $user->id,
+            'name' => $request['name'],
+            'details' => $request['details'],
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => "Address added successfully.",
