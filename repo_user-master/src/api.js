@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.11.105/api";
+const BASE_URL = "http://localhost:8080/api";
 const CUSTOMER_URL = "/customer";
 const CATEGORIES_URL = "/categories";
 const PROMO_URL = "/promos";

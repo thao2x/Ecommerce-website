@@ -80,7 +80,17 @@
                         </select>
                     </div>
                 </div>
-                
+
+                <!-- Payment -->
+                <div class="shipping">
+                    <h3>Choose Payment</h3>
+                    <div class="shipping__type">
+                        <select class="select-custom" name="pay">
+                            <option selected value="cod">COD</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Total -->
                 <div class="price">
                     <div class="total">
@@ -139,7 +149,7 @@
         </div>
 
         <!-- Loading when create order -->
-        <Loading v-if="loadingCreateOrder"/>
+        <Loading v-if="loadingCreateOrder" />
     </div>
 </template>
   

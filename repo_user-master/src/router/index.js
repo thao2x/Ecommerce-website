@@ -115,7 +115,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   // Chuyển đến trang login nếu chưa được login
-  const publicPages = ['login', 'register', 'home', 'search', 'offer', 'notification', 'category'];
+  const publicPages = ['login', 'register', 'home', 'search', 'offer', 'notification', 'category', 'product'];
   const authRequired = !publicPages.includes(to.name);
   const loggedIn = localStorage.getItem('user');
 
