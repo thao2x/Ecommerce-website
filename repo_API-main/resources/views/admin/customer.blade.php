@@ -39,7 +39,7 @@
                         render: function(data, type, row, meta) {
                             let url_detail = "{{ route('admin.customer.show', '--customerId--') }}";
                             return `<div>
-                                        <img class="avatar avatar-sm me-3" src="${data.length ? "{{ config('APP_URL') . '/storage' }}" + data : " {{ asset('assets/img/no_image.png') }}"}">
+                                        <img class="avatar avatar-sm me-3" src="${data ? "{{ config('APP_URL') . '/storage' }}" + data : " {{ asset('assets/img/no_image.png') }}"}">
                                     </div>`;
                         }
                     },

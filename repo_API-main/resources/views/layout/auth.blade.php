@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="col-12">
-                    <label for="yourPassword" class="form-label">Mật khẩu</label>
+                    <label for="yourPassword" class="form-label">Password</label>
                     <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
                         value="{{ old('password') }}">
                     @error('password')
@@ -57,7 +57,7 @@
                     @enderror
                 </div>
                 <div class="d-flex align-items-center justify-content-center">
-                    <button class="btn btn-primary w-auto" type="submit">Đăng nhập</button>
+                    <button class="btn btn-primary w-auto" type="submit">Login</button>
                 </div>
             </form>
         </div>
