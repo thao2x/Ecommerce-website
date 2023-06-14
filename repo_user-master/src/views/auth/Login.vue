@@ -12,14 +12,15 @@
             <font-awesome-icon icon="fa-solid fa-envelope" />
             <input placeholder="Email" type="text" v-model="email" @focus="errorEmail = null"/>
         </div>
-        <p class="error" v-if="errorEmail">{{ errorEmail }}</p>
+        <p class="error" >{{ errorEmail }}</p>
 
         <!-- Password -->
         <div class="input-group">
             <font-awesome-icon icon="fa-solid fa-lock" />
             <input placeholder="Password" type="password" v-model="password" @focus="errorPassword = null" />
         </div>
-        <p class="error" v-if="errorPassword">{{ errorPassword }}</p>
+        <p class="error" >{{ errorPassword }}</p>
+        <p class="error">{{ error }}</p>
 
         <!-- Remember -->
         <div class="remember-group">
@@ -59,6 +60,7 @@ export default {
             remember: false,
             errorEmail: null,
             errorPassword: null,
+            error: null,
         };
     },
     methods: {
@@ -83,7 +85,7 @@ export default {
                     Promise.all([getCart(), getAddress()])
                         .then((result) => {
                             this.$store.commit('changeCartItems', result[0].data.data);
-                            this.$store.commit('changeAddress', result[1].data.data);
+                            this.$store.commit('changeAddress', result[1].data.data[0]);
                         })
                         .catch((error) => {
                             console.log(error);
@@ -94,17 +96,17 @@ export default {
 
                 } else {
                     // Hiển thị lỗi khi đăng nhập [Validate]
-                    console.log(response.data);
-                    if (response.data.errors.email.length > 0) {
-                        this.errorEmail = response.data.errors.email[0];
+                    console.log(response.data.data);
+                    if (response.data.data.email && response.data.data.email.length > 0) {
+                        this.errorEmail = response.data.data.email[0];
                     }
 
-                    if (response.data.errors.password.length > 0) {
-                        this.errorPassword = response.data.errors.password[0]; 
+                    if (response.data.data.password && response.data.data.password.length > 0) {
+                        this.errorPassword = response.data.data.password[0]; 
                     }
                 }
             }).catch((error) => {
-                // console.log(error.response.data);
+                this.error = error.response.data.data; 
             }).finally(() => {
 
                 // Ẩn loading
@@ -186,7 +188,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 25px 0;
+        margin: 5px 0 25px 0;
 
         input {
             accent-color: #000;
@@ -225,7 +227,9 @@ export default {
 
     .error {
         color: red;
-        margin-bottom: 10px;
+        padding-bottom: 10px;
+        font-size: 18px;
+        font-weight: 600;
     }
 }
 </style>

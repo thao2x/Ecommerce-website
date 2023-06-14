@@ -772,6 +772,13 @@ export default {
                 outline: 2px solid #1d9ce5c2;
             }
         }
+
+        .c-red {
+            color: red;
+            margin: 0;
+            padding: 0;
+            margin-top: 10px;
+        }
     }
 
     .edit--btn {
@@ -865,7 +872,7 @@ export default {
     }
 
     button {
-        background-color: #8b8b8b;
+        background-color: #000;
         color: #fff;
         border-radius: 50px;
         border: none;
@@ -889,13 +896,6 @@ export default {
 
     .loadingButton {
         background-color: #000;
-    }
-
-    p.c-red {
-        color: red;
-        margin: 0;
-        padding: 0;
-        margin-top: 10px;
     }
 }
 </style>

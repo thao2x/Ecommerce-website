@@ -1,5 +1,9 @@
 <template>
 	<div class="order_detail" id="order_page">
+		<template v-if="loading">
+            <Loading />
+        </template>
+
 		<template>
 			<!-- Header -->
 			<div class="header">
@@ -88,6 +92,7 @@
 
 <script>
 import BackButton from '@/components/BackButton'
+import Loading from '@/components/Loading'
 
 import { getOrdertById, cancelOrder } from "@/api";
 import { mixin } from '@/mixin'
@@ -96,9 +101,11 @@ export default {
 	mixins: [mixin],
 	components: {
 		BackButton,
+		Loading
 	},
 	data() {
 		return {
+            loading: true,
 			item: {},
 			price: '',
 			intoMoney: ''
@@ -113,7 +120,7 @@ export default {
 			this.item = {};
 		}).finally(() => {
 			// Ẩn loading
-			// this.loading = false;
+			this.loading = false;
 		})
 	},
 	methods: {

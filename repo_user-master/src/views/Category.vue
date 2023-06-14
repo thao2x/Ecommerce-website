@@ -82,7 +82,7 @@ export default {
         flex-wrap: wrap;
         justify-content: space-between;
         padding: 0 5%;
-        height: calc(100% - 60px);
+        max-height: calc(100% - 60px);
         overflow: auto;
         padding-top: 5px;
 

@@ -44,7 +44,6 @@ export default {
         display: flex;
         align-items: center;
         top: 0;
-        background-color: #fff;
         z-index: 1;
         padding: 0 5%;
     }

@@ -96,8 +96,8 @@ export default {
 
                 if (response.data.success) {
                     // Lưu thông tin user vào vuex store
-                    this.$store.commit('changeUser', response.data);
-
+                    this.$store.commit('changeUser', response.data.data);
+                    
                     // Redirect về lại trang profile
                     this.goToPage('profile');
                 } else {
