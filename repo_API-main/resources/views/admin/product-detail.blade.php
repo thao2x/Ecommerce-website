@@ -27,7 +27,7 @@
                         <div class="col-8">
                             <label for="price" class="form-label">Price</label>
                             <input type="number" name="price" max="999999" value="{{ $product->price }}"
-                                class="form-control mt-2" id="price" required>
+                                class="form-control mt-2" id="price" step="0.01" required>
                         </div>
                         <div class="col-4">
                             <label for="type" class="form-label">Type</label>
@@ -89,14 +89,14 @@
                                 <i
                                     class="bi bi-card-image fs-4 {{ count($product->images) > 4 && $product->images[3] ? 'd-none' : null }}"></i>
                                 <span
-                                    class="{{ count($product->images) > 4 && $product->images[3] ? 'd-none' : null }}">Drop
+                                    class="{{ count($product->images) > 3 && $product->images[3] ? 'd-none' : null }}">Drop
                                     your images here, or select
                                     <b>click to browser</b></span>
-                                <img src="{{ count($product->images) > 4 && $product->images[3] ? config('APP_URL') . '/storage' . $product->images[3]->src : null }}"
-                                    class="{{ count($product->images) > 4 && $product->images[3] ? null : 'd-none' }}">
+                                <img src="{{ count($product->images) > 3 && $product->images[3] ? config('APP_URL') . '/storage' . $product->images[3]->src : null }}"
+                                    class="{{ count($product->images) > 3 && $product->images[3] ? null : 'd-none' }}">
                                 <input type="file" hidden name="image_d" id="image_add_d" class="drop-image"
                                     accept="image/jpeg, image/png"
-                                    data-imageId="{{ count($product->images) > 4 && $product->images[3] ? $product->images[3]->id : '' }}">
+                                    data-imageId="{{ count($product->images) > 3 && $product->images[3] ? $product->images[3]->id : '' }}">
                             </div>
                         </div>
                     </div>

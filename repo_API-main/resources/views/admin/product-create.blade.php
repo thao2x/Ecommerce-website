@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-8">
                             <label for="price" class="form-label">Price</label>
-                            <input type="number" name="price" max="999999" class="form-control mt-2" id="price" required>
+                            <input type="number" name="price" max="999999" class="form-control mt-2" id="price" step="0.01" required>
                         </div>
                         <div class="col-4">
                             <label for="type" class="form-label">Type</label>
