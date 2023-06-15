@@ -58,16 +58,16 @@
         <p class="fs-5 fw-bold">Customer Information</p>
 
         <div class="mt-2 ps-4">
-            <p class="m-0 mb-1 fs-6 text-secondary">Name</p>
-            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->full_name }}</p>
-            <p class="m-0 mb-1 fs-6 text-secondary">Nick name</p>
-            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->nick_name }}</p>
-            <p class="m-0 mb-1 fs-6 text-secondary">Date of birth</p>
-            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->dob }}</p>
-            <p class="m-0 mb-1 fs-6 text-secondary">Email</p>
-            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->email }}</p>
-            <p class="m-0 mb-1 fs-6 text-secondary">Phone</p>
-            <p class="m-0 mb-1 fs-6 fw-bold">{{ $customer->phone }}</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">Full Name</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">{{ $customer->full_name }}</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">Nick name</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">{{ $customer->nick_name }}</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">Date of birth</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">{{ $customer->dob }}</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">Email</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">{{ $customer->email }}</p>
+            <p class="m-0 mb-1 fs-6 fw-bold">Phone</p>
+            <p class="m-0 mb-1 fs-6 text-secondary">{{ $customer->phone }}</p>
         </div>
     </div>
     <div class="col-9 ps-0">
@@ -131,7 +131,7 @@
                 },
             },
             columns: [
-                { 
+                {
                     data: 'code',
                     width: '20%',
                     render: function(data, type, row, meta){
@@ -139,18 +139,18 @@
                         return `<a href="${url_detail.replace("--code--", row.id)}">#${row.code}</a>`;
                     }
                 },
-                { 
+                {
                     data: 'created_at',
                     width: '15%',
                 },
-                { 
+                {
                     data: 'customer',
                     width: '25%',
                     render: function(data, type, row, meta){
                         return `<span class="line-two">${row.order_items.reduce((arr, item) => { return [...arr, item.variant.product.name]; }, []).join(", ")}</span>`
                     }
                 },
-                { 
+                {
                     data: 'order_items',
                     width: '15%',
                     render: function(data, type, row, meta){
@@ -164,7 +164,7 @@
                         return `$${total.toLocaleString("en-IN")}`;
                     }
                 },
-                { 
+                {
                     data: 'status',
                     width: '15%',
                     render: function(data, type, row, meta){
@@ -177,7 +177,7 @@
                         return `<span class="badge badge-sm bg-gradient-cancel w-auto">Canceled</span>`;
                     }
                 },
-                { 
+                {
                     data: 'order_items',
                     width: '10%',
                     render: function(data, type, row, meta){

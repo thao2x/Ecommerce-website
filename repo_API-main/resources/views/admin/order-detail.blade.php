@@ -40,11 +40,11 @@
                     <span class="ps-3">{{ $item->variant->product->name }}</span>
                 </div>
                 <div class="col-3 d-flex justify-content-end align-items-center">
-                    <i class="bi bi-currency-dollar"></i>{{ number_format($item->variant->product->price) }} ×
+                    <i class="bi bi-currency-dollar"></i>{{ ($item->variant->product->price) }} ×
                     {{ $item->quantity }}
                 </div>
                 <div class="col-3 d-flex justify-content-end align-items-center">
-                    <i class="bi bi-currency-dollar"></i>{{ number_format($item->quantity *
+                    <i class="bi bi-currency-dollar"></i>{{ ($item->quantity *
                     $item->variant->product->price) }}
                 </div>
             </div>
@@ -73,13 +73,13 @@
                 @endphp
 
                 <p class="p-1 mb-0 text-end">
-                    <i class="bi bi-currency-dollar"></i>{{ number_format($total) }}
+                    <i class="bi bi-currency-dollar"></i>{{ ($total) }}
                 </p>
                 <p class="p-1 mb-0 text-end">
-                    <i class="bi bi-currency-dollar"></i>{{ number_format($order->shipping->price) }}
+                    <i class="bi bi-currency-dollar"></i>{{ ($order->shipping->price) }}
                 </p>
                 <p class="p-1 mb-0 text-end">
-                    <i class="bi bi-currency-dollar"></i>{{ number_format($order->promo->percentage/100 * $total) }}
+                    <i class="bi bi-currency-dollar"></i>{{ ($order->promo->percentage/100 * $total) }}
                 </p>
 
                 <p class="p-1 mb-0 text-end">
@@ -94,7 +94,7 @@
                     @endphp
 
                     <b>
-                        <i class="bi bi-currency-dollar"></i>{{ number_format($total) }}
+                        <i class="bi bi-currency-dollar"></i>{{ ($total) }}
                     </b>
                 </p>
             </div>
